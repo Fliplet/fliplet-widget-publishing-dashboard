@@ -12,7 +12,7 @@ To guide an AI assistant in creating a comprehensive, UI-agnostic client-side mi
 ## Output
 
 - **Format:** Vanilla JavaScript (`.js`)
-- **Location:** `/middleware/` or `/js/` (depending on project structure)
+- **Location:** `/src/middleware/` (depending on project structure)
 - **Structure:** Multiple interconnected class files that work together
 - **Module System:** None - uses global namespace and dependency injection patterns
 
@@ -324,7 +324,7 @@ middleware.on('api.error', function(event) {
 Generate the following file structure:
 
 ```
-middleware/
+src/middleware/
 ├── core/
 │   ├── BaseMiddleware.js
 │   ├── StateManager.js
