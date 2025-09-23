@@ -246,7 +246,7 @@ The generated plan must follow this exact structure for compatibility with `gene
 ## File Structure Plan
 
 ```
-middleware/
+src/middleware/
 ├── core/
 │   ├── BaseMiddleware.js
 │   ├── StateManager.js
