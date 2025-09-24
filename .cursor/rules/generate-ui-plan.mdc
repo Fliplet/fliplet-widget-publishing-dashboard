@@ -1,0 +1,590 @@
+---
+description: Generating Comprehensive UI/UX Plans from Middleware Architecture
+globs:
+alwaysApply: false
+---
+# Rule: Generating Comprehensive UI/UX Plans from Middleware Architecture
+
+## Goal
+
+To guide an AI assistant in analyzing existing middleware architecture and creating a comprehensive UI/UX plan that enables Product Managers and Designers to review and ensure high-quality, responsive, and customizable user interfaces. The plan serves as the foundation for subsequent task generation and implementation while maintaining Fliplet's branding guidelines and accessibility standards.
+
+## Output
+
+- **Format:** Markdown (`.md`)
+- **Location:** `/tasks/`
+- **Filename:** `ui-plan-[project-name].md`
+- **Purpose:** Comprehensive UI/UX plan ready for review and task generation
+
+## Process
+
+1. **Analyze Middleware Architecture:** Read and understand the existing middleware plan and implementation
+2. **Identify UI Requirements:** Extract user workflows, data displays, and interaction patterns
+3. **Design Component Architecture:** Create reusable Vue.js components that integrate with middleware
+4. **Plan Responsive Layouts:** Design mobile-first responsive interfaces
+5. **Define Customization Framework:** Plan theming and branding customization
+6. **Document Accessibility:** Ensure WCAG 2.1 AA compliance throughout
+7. **Generate Plan Document:** Create structured markdown plan ready for review and task generation
+
+## Input Requirements
+
+The AI should analyze the following:
+
+### Middleware Documentation
+- **Architecture Plan:** `/tasks/middleware-plan-[project-name].md`
+- **Implementation Files:** `/src/middleware/` directory structure
+- **API Service Interfaces:** Available methods and data structures
+- **Workflow Controllers:** User interaction sequences
+- **State Management:** Data available for UI display
+
+### Key Analysis Areas
+- **User Workflows:** Sequential steps users must complete
+- **Data Presentation:** Information that needs to be displayed
+- **User Actions:** Buttons, forms, and interactions required
+- **Error States:** How errors should be presented to users
+- **Loading States:** Progressive disclosure and skeleton screens
+- **Accessibility:** Keyboard navigation, screen reader support
+
+## UI/UX Plan Structure
+
+The generated plan must follow this exact structure for compatibility with `generate-tasks.mdc`:
+
+```markdown
+# UI/UX Plan: [Project Name]
+
+## Overview
+[Brief description of the UI system, its purpose, and target users]
+
+## Design Principles
+
+### Core Principles
+- **Responsive Design:** Mobile-first approach with fluid layouts
+- **Accessibility:** WCAG 2.1 AA compliance throughout
+- **Brand Flexibility:** Customizable theming system
+- **User Experience:** Clear navigation and intuitive interactions
+- **Performance:** Optimized loading and smooth transitions
+
+### Design System Integration
+- **Fliplet Studio UI:** How components integrate with Fliplet's design system
+- **Custom Components:** When and how to extend the base system
+- **Theming Architecture:** CSS custom properties and SCSS variables
+
+## User Journey Mapping
+
+### Primary User Flow: [Flow Name]
+**User Goal:** [What the user wants to achieve]
+**Entry Point:** [How users access this flow]
+**Success Criteria:** [How users know they've succeeded]
+
+**Steps:**
+1. **[Step Name]**
+   - User Action: [What the user does]
+   - System Response: [How the UI responds]
+   - Data Displayed: [Information shown]
+   - Possible Errors: [Error states and messages]
+
+2. **[Next Step]**
+   [Continue for all steps]
+
+### Secondary User Flows
+[Document additional user journeys as needed]
+
+## Component Architecture
+
+### Layout Components
+
+#### AppShell
+**Purpose:** Main application wrapper providing consistent structure
+**Features:**
+- Responsive navigation
+- Branding area
+- Content container
+- Footer information
+
+**Props:**
+```javascript
+{
+  branding: Object,     // Logo, colors, typography
+  navigation: Array,    // Menu items and structure
+  user: Object,        // Current user information
+  showFooter: Boolean  // Toggle footer visibility
+}
+```
+
+#### NavigationHeader
+**Purpose:** Primary navigation and branding display
+**Responsive Behavior:**
+- Desktop: Horizontal navigation bar
+- Tablet: Condensed navigation
+- Mobile: Hamburger menu with slide-out drawer
+
+### Page Components
+
+#### [PageName]View
+**Purpose:** [What this page displays and manages]
+**Data Requirements:** [What middleware data it consumes]
+**User Actions:** [Primary interactions available]
+**States:**
+- Loading: [How loading is indicated]
+- Empty: [What shows when no data]
+- Error: [How errors are displayed]
+- Success: [Success state appearance]
+
+### Form Components
+
+#### [FormName]Form
+**Purpose:** [What data this form collects]
+**Fields:** [List all form fields with types]
+**Validation:** [Client-side validation rules]
+**Submission:** [How form interacts with middleware]
+
+### UI Components
+
+#### DataTable
+**Purpose:** Display tabular data with sorting and filtering
+**Features:**
+- Responsive table design
+- Column sorting
+- Search/filter functionality
+- Pagination
+- Row actions
+
+#### StatusIndicator
+**Purpose:** Show workflow progress and status
+**States:** [Different status types and their visual representation]
+
+#### ActionButton
+**Purpose:** Primary action triggers with loading states
+**Variants:** Primary, Secondary, Danger, Success
+
+### Feedback Components
+
+#### NotificationToast
+**Purpose:** Temporary feedback messages
+**Types:** Success, Warning, Error, Info
+**Behavior:** Auto-dismiss with manual close option
+
+#### ModalDialog
+**Purpose:** Confirmations and focused interactions
+**Variants:** Confirm, Alert, Custom content
+
+## Responsive Design Strategy
+
+### Breakpoints
+```scss
+$breakpoints: (
+  'mobile': 320px,    // Base mobile design
+  'tablet': 768px,    // Tablet portrait
+  'desktop': 1024px,  // Desktop and larger
+  'wide': 1440px     // Wide screens
+);
+```
+
+### Layout Patterns
+
+#### Mobile First
+- Single column layouts
+- Stacked navigation
+- Full-width forms
+- Collapsed tables to cards
+
+#### Tablet Adaptations
+- Two-column layouts where appropriate
+- Side navigation option
+- Expanded table views
+- Modal dialogs instead of full-screen
+
+#### Desktop Enhancements
+- Multi-column dashboards
+- Persistent navigation
+- Side-by-side comparisons
+- Advanced filtering panels
+
+## Theming & Customization
+
+### CSS Custom Properties
+```css
+:root {
+  /* Brand Colors */
+  --primary-color: #0087be;
+  --secondary-color: #00acc1;
+  --accent-color: #ff6900;
+  
+  /* Semantic Colors */
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --error-color: #f44336;
+  --info-color: #2196f3;
+  
+  /* Typography */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+  --font-size-base: 16px;
+  --line-height-base: 1.5;
+  
+  /* Spacing */
+  --spacing-unit: 8px;
+  --container-max-width: 1200px;
+  
+  /* Shadows & Borders */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+  --border-radius: 4px;
+}
+```
+
+### Theme Configuration
+```javascript
+{
+  name: "Custom Theme",
+  colors: {
+    primary: "#custom-primary",
+    secondary: "#custom-secondary",
+    // ... other color overrides
+  },
+  typography: {
+    fontFamily: "Custom Font Stack",
+    headingFont: "Custom Heading Font",
+    // ... other typography settings
+  },
+  spacing: {
+    compact: true,  // Reduces default spacing
+    // ... other spacing options
+  }
+}
+```
+
+## Interaction Patterns
+
+### Form Interactions
+- **Inline Validation:** Real-time feedback as users type
+- **Error Prevention:** Disable submit until valid
+- **Clear Error Messages:** Specific, actionable error text
+- **Progress Indication:** Multi-step form progress
+
+### Data Loading
+- **Skeleton Screens:** Show layout structure while loading
+- **Progressive Loading:** Load critical content first
+- **Optimistic Updates:** Immediate UI feedback
+- **Error Recovery:** Clear retry mechanisms
+
+### Navigation
+- **Breadcrumbs:** Clear location indication
+- **Tab Navigation:** For related content sections
+- **Pagination:** For large data sets
+- **Search:** Global and contextual search
+
+## Accessibility Requirements
+
+### WCAG 2.1 AA Compliance
+- **Color Contrast:** Minimum 4.5:1 for normal text, 3:1 for large text
+- **Keyboard Navigation:** All interactive elements keyboard accessible
+- **Focus Indicators:** Clear visual focus states
+- **Screen Reader Support:** Proper ARIA labels and landmarks
+
+### Implementation Guidelines
+```vue
+<!-- Example accessible component structure -->
+<template>
+  <nav role="navigation" aria-label="Main navigation">
+    <ul role="list">
+      <li v-for="item in navItems" :key="item.id">
+        <a 
+          :href="item.url"
+          :aria-current="item.active ? 'page' : null"
+          @click="handleNavigation"
+        >
+          {{ item.label }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</template>
+```
+
+### Testing Requirements
+- **Keyboard Testing:** Navigate entire app without mouse
+- **Screen Reader Testing:** NVDA/JAWS on Windows, VoiceOver on Mac
+- **Color Contrast:** Automated testing with axe-core
+- **Focus Management:** Proper focus restoration after modals
+
+## Performance Optimization
+
+### Loading Strategy
+- **Code Splitting:** Lazy load route components
+- **Image Optimization:** Responsive images with loading="lazy"
+- **Font Loading:** FOUT prevention with font-display
+- **CSS Optimization:** Critical CSS inline, rest async
+
+### Runtime Performance
+- **Virtual Scrolling:** For large lists
+- **Debounced Inputs:** Prevent excessive API calls
+- **Memoization:** Cache expensive computations
+- **Animation Performance:** CSS transforms over position
+
+## Error Handling & Feedback
+
+### Error States
+- **Network Errors:** Clear offline indication
+- **Validation Errors:** Inline field-level messages
+- **System Errors:** User-friendly error pages
+- **Permission Errors:** Clear access denied messaging
+
+### User Feedback
+- **Success Confirmations:** Clear success messages
+- **Progress Indicators:** Long-running operations
+- **Undo Actions:** Where appropriate
+- **Help Text:** Contextual assistance
+
+## Integration with Middleware
+
+### State Management Integration
+```javascript
+// Example Vue.js integration with middleware
+export default {
+  data() {
+    return {
+      workflowState: null,
+      loading: false,
+      error: null
+    };
+  },
+  
+  async created() {
+    try {
+      this.loading = true;
+      // Get current state from middleware
+      this.workflowState = await window.PublishingDashboard
+        .middleware
+        .stateManager
+        .getWorkflowState('publishing');
+    } catch (error) {
+      this.error = window.PublishingDashboard
+        .middleware
+        .errorHandler
+        .getUserMessage(error);
+    } finally {
+      this.loading = false;
+    }
+  }
+};
+```
+
+### Event System Integration
+```javascript
+// Listen for middleware events
+mounted() {
+  window.PublishingDashboard.middleware.on('workflow:updated', this.handleWorkflowUpdate);
+  window.PublishingDashboard.middleware.on('error:occurred', this.handleError);
+},
+
+beforeDestroy() {
+  window.PublishingDashboard.middleware.off('workflow:updated', this.handleWorkflowUpdate);
+  window.PublishingDashboard.middleware.off('error:occurred', this.handleError);
+}
+```
+
+## Component Documentation
+
+### Component Template
+```vue
+<template>
+  <div class="component-name" :class="computedClasses">
+    <!-- Component markup -->
+  </div>
+</template>
+
+<script>
+/**
+ * ComponentName - Brief description
+ * 
+ * @example
+ * <ComponentName 
+ *   :prop1="value"
+ *   @event="handler"
+ * />
+ */
+export default {
+  name: 'ComponentName',
+  
+  props: {
+    /**
+     * Prop description
+     * @type {String}
+     * @required
+     */
+    prop1: {
+      type: String,
+      required: true,
+      validator: (value) => {
+        return ['option1', 'option2'].includes(value);
+      }
+    }
+  },
+  
+  emits: ['event-name'],
+  
+  // ... rest of component
+};
+</script>
+
+<style lang="scss" scoped>
+.component-name {
+  // Component styles using CSS custom properties
+}
+</style>
+```
+
+## Testing Strategy
+
+### Component Testing
+- **Unit Tests:** Test component logic in isolation
+- **Integration Tests:** Test component with middleware
+- **Visual Tests:** Screenshot comparisons
+- **Accessibility Tests:** Automated a11y testing
+
+### User Testing
+- **Usability Testing:** Task-based user testing
+- **A/B Testing:** Test different UI variations
+- **Performance Testing:** Load time metrics
+- **Device Testing:** Cross-device compatibility
+
+## Implementation Priorities
+
+### Phase 1: Core Components
+1. AppShell and navigation
+2. Basic form components
+3. Data display components
+4. Error handling components
+
+### Phase 2: Advanced Features
+1. Complex workflows
+2. Data visualization
+3. Advanced filtering
+4. Batch operations
+
+### Phase 3: Polish & Optimization
+1. Animation refinements
+2. Performance optimization
+3. Advanced theming
+4. Enhanced accessibility
+
+## Success Metrics
+
+### User Experience Metrics
+- **Task Completion Rate:** 95%+ successful completions
+- **Time to Complete:** Reduced by 30% from current
+- **Error Rate:** Less than 5% user errors
+- **Satisfaction Score:** 4.5+ out of 5
+
+### Technical Metrics
+- **Load Time:** Initial load under 3 seconds
+- **Accessibility Score:** 100% WCAG 2.1 AA compliance
+- **Browser Support:** Modern browsers + IE11
+- **Device Support:** Responsive from 320px width
+
+### Design System Metrics
+- **Component Reuse:** 80%+ shared components
+- **Theme Adoption:** Easy customization demonstrated
+- **Documentation Coverage:** 100% components documented
+- **Design Consistency:** Style guide adherence
+
+## File Structure Plan
+
+```
+/src/
+├── components/
+│   ├── layout/
+│   │   ├── AppShell.vue
+│   │   ├── NavigationHeader.vue
+│   │   ├── PageContainer.vue
+│   │   └── FooterSection.vue
+│   ├── pages/
+│   │   ├── [PageName]View.vue
+│   │   └── ...
+│   ├── forms/
+│   │   ├── [FormName]Form.vue
+│   │   ├── FormField.vue
+│   │   └── ValidationMessage.vue
+│   ├── ui/
+│   │   ├── DataTable.vue
+│   │   ├── StatusIndicator.vue
+│   │   ├── ActionButton.vue
+│   │   └── LoadingSpinner.vue
+│   ├── feedback/
+│   │   ├── NotificationToast.vue
+│   │   ├── ModalDialog.vue
+│   │   └── ErrorBoundary.vue
+│   └── shared/
+│       ├── BaseComponent.vue
+│       └── TransitionWrapper.vue
+├── styles/
+│   ├── _variables.scss
+│   ├── _mixins.scss
+│   ├── _base.scss
+│   ├── _utilities.scss
+│   └── themes/
+│       ├── default.scss
+│       └── [custom-theme].scss
+├── utils/
+│   ├── validators.js
+│   ├── formatters.js
+│   └── accessibility.js
+└── main.js
+```
+
+## Next Steps
+
+This UI/UX plan should be reviewed for:
+1. **User Experience:** Intuitive workflows and clear interactions
+2. **Visual Design:** Consistent with Fliplet brand guidelines
+3. **Technical Feasibility:** Vue.js implementation approach
+4. **Accessibility:** WCAG 2.1 AA compliance throughout
+5. **Performance:** Optimal loading and runtime performance
+
+Once approved, this plan will be converted to implementation tasks using `generate-tasks.mdc`.
+```
+
+## Plan Generation Guidelines
+
+### Comprehensive Analysis
+- Read the complete middleware architecture plan
+- Understand all user workflows and data flows
+- Identify every user interaction point
+- Map all states (loading, error, success, empty)
+
+### UI/UX Design
+- Design for non-technical users first
+- Ensure responsive mobile-first approach
+- Plan for accessibility from the start
+- Include comprehensive customization options
+
+### Documentation Quality
+- Use clear, non-technical language where possible
+- Include visual examples and code snippets
+- Ensure compatibility with task generation
+- Provide implementation guidance
+
+### Review Considerations
+- Design decisions should be clear to non-developers
+- Customization options should be well-documented
+- Accessibility requirements must be specific
+- Performance targets should be measurable
+
+## Target Audience
+
+The generated plan should be suitable for:
+- **Product Managers** reviewing user experience decisions
+- **Designers** understanding component structure and theming
+- **Developers** who will implement the components
+- **QA Engineers** understanding UI behavior and states
+- **Stakeholders** reviewing brand compliance
+
+## Final Instructions
+
+1. **Analyze the middleware architecture** thoroughly before beginning
+2. **Create a complete UI/UX plan** that addresses every user touchpoint
+3. **Ensure the plan structure** matches the required format exactly
+4. **Design for Vue.js** within Fliplet's framework constraints
+5. **Include specific details** that can be converted to actionable tasks
+6. **Plan for accessibility** and responsive design throughout
+7. **Consider non-technical reviewers** in your language choices
+8. **Prepare for task generation** by including implementation details
