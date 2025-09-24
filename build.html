@@ -1,1 +1,47 @@
-<div id="publishing-dashboard"></div>
+<div id="publishing-dashboard" class="fl-widget-instance">
+  <div id="app">
+    <app-shell
+      :current-platform="currentPlatform"
+      :user="currentUser"
+      :app-info="appInfo"
+      :show-admin-menu="isAdmin"
+      @platform-change="handlePlatformChange"
+      @navigate="handleNavigation"
+    >
+      <div class="dashboard-container">
+        <!-- Platform Selection View -->
+        <platform-selector
+          v-if="!currentPlatform && currentView === 'dashboard'"
+          :ios-status="iosStatus"
+          :android-status="androidStatus"
+          :last-ios-submission="lastIosSubmission"
+          :last-android-submission="lastAndroidSubmission"
+          :show-admin-section="isAdmin"
+          @select-platform="handlePlatformSelection"
+          @navigate="handleNavigation"
+        ></platform-selector>
+
+        <!-- iOS Workflow View -->
+        <div v-else-if="currentPlatform === 'ios'" class="workflow-view">
+          <h2>iOS Publishing Workflow</h2>
+          <p>iOS workflow components will be loaded here</p>
+          <button class="btn btn-secondary" @click="handlePlatformChange(null)">Back to Dashboard</button>
+        </div>
+
+        <!-- Android Workflow View -->
+        <div v-else-if="currentPlatform === 'android'" class="workflow-view">
+          <h2>Android Publishing Workflow</h2>
+          <p>Android workflow components will be loaded here</p>
+          <button class="btn btn-secondary" @click="handlePlatformChange(null)">Back to Dashboard</button>
+        </div>
+
+        <!-- Admin/Permissions View -->
+        <div v-else-if="currentView === 'permissions'">
+          <h2>App Permissions Management</h2>
+          <p>Permission management will be implemented here.</p>
+          <button class="btn btn-secondary" @click="handleNavigation('dashboard')">Back to Dashboard</button>
+        </div>
+      </div>
+    </app-shell>
+  </div>
+</div>

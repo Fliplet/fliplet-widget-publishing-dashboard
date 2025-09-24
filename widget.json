@@ -2,25 +2,40 @@
   "name": "Publishing Dashboard",
   "package": "com.fliplet.publishing-dashboard",
   "version": "1.0.0",
-  "description": "",
+  "description": "Manage iOS and Android app publishing workflows",
   "icon": "img/icon.png",
   "tags": ["type:component", "category:general"],
   "provider_only": false,
   "references": [],
   "html_tag": "div",
   "interface": {
-    "dependencies": [],
-    "assets": []
-  },
-  "build": {
     "dependencies": [
-      "vue.js",
       "fliplet-core",
       "fliplet-studio-ui"
     ],
     "assets": [
-      "dist/css/index.css",
-      "dist/app.js"
+      "js/interface.js",
+      "css/interface.css"
+    ]
+  },
+  "build": {
+    "dependencies": [
+      "vue.js",
+      "font-awesome",
+      "fliplet-core"
+    ],
+    "assets": [
+      "css/build.css",
+      "js/templates.js",
+      "js/components/ui/loading-spinner.js",
+      "js/components/ui/status-indicator.js",
+      "js/components/feedback/loading-overlay.js",
+      "js/components/feedback/notification-toast.js",
+      "js/components/layout/footer-section.js",
+      "js/components/layout/navigation-header.js",
+      "js/components/layout/platform-selector.js",
+      "js/components/layout/app-shell.js",
+      "js/build.js"
     ]
   }
 }
