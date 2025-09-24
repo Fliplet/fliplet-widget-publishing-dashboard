@@ -41,7 +41,7 @@
 
 ## Tasks
 
-- [ ] 1.0 Set up core layout and navigation components
+- [x] 1.0 Set up core layout and navigation components
   - [x] 1.1 Create AppShell.vue component with responsive layout structure
   - [x] 1.2 Implement NavigationHeader.vue with platform switcher and user menu
   - [x] 1.3 Create PlatformSelector.vue for iOS/Android platform selection cards
@@ -50,12 +50,12 @@
   - [x] 1.6 Write unit tests for all layout components
 
 - [ ] 2.0 Implement reusable UI components and form elements
-  - [ ] 2.1 Create FormField.vue base component with validation support
-  - [ ] 2.2 Implement FileUploadZone.vue with drag-and-drop functionality
-  - [ ] 2.3 Build WorkflowStepper.vue for visual progress indication
-  - [ ] 2.4 Create StatusCard.vue for displaying submission status
-  - [ ] 2.5 Implement ValidationMessage.vue for inline error display
-  - [ ] 2.6 Add LoadingSpinner.vue component
+  - [x] 2.1 Create FormField.vue base component with validation support
+  - [x] 2.2 Implement FileUploadZone.vue with drag-and-drop functionality
+  - [x] 2.3 Build WorkflowStepper.vue for visual progress indication
+  - [x] 2.4 Create StatusCard.vue for displaying submission status
+  - [x] 2.5 Implement ValidationMessage.vue for inline error display
+  - [x] 2.6 Add LoadingSpinner.vue component
   - [ ] 2.7 Write comprehensive tests for all UI components
 
 - [ ] 3.0 Create workflow management system and step components
