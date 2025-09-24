@@ -1,25 +1,20 @@
 <template>
-  <transition-group name="toast" tag="div" class="notification-container">
+  <transition-group name="toast" tag="div" class="notification-toast-container">
     <div
       v-for="notification in notifications"
       :key="notification.id"
-      class="notification-toast"
-      :class="`notification-toast--${notification.type}`"
-      role="alert"
+      :class="['notification-toast', `notification-toast--${notification.type}`]"
+      @click="dismiss(notification.id)"
     >
       <div class="notification-toast__icon">
-        <i :class="getIconClass(notification.type)" aria-hidden="true"></i>
+        <i :class="getIconClass(notification.type)"></i>
       </div>
       <div class="notification-toast__content">
         <p class="notification-toast__message">{{ notification.message }}</p>
+        <button v-if="notification.duration === 0" class="notification-toast__close">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
-      <button
-        class="notification-toast__close"
-        aria-label="Close notification"
-        @click="removeNotification(notification.id)"
-      >
-        <i class="fas fa-times" aria-hidden="true"></i>
-      </button>
     </div>
   </transition-group>
 </template>
@@ -30,60 +25,53 @@ export default {
   data() {
     return {
       notifications: [],
-      nextId: 1
+      nextId: 0
     };
   },
-  created() {
+  mounted() {
     this.$root.$on('show-notification', this.showNotification);
   },
   beforeDestroy() {
     this.$root.$off('show-notification', this.showNotification);
   },
   methods: {
-    showNotification({ type = 'info', message, duration = 5000 }) {
+    showNotification({ type = 'info', message, duration = 3000 }) {
       const id = this.nextId++;
-      const notification = { id, type, message };
-      
-      this.notifications.push(notification);
-      
+      this.notifications.push({ id, type, message, duration });
+
       if (duration > 0) {
-        setTimeout(() => {
-          this.removeNotification(id);
-        }, duration);
+        setTimeout(() => this.dismiss(id), duration);
       }
     },
-    
-    removeNotification(id) {
-      const index = this.notifications.findIndex(n => n.id === id);
-      if (index > -1) {
-        this.notifications.splice(index, 1);
-      }
+    dismiss(id) {
+      this.notifications = this.notifications.filter(n => n.id !== id);
     },
-    
     getIconClass(type) {
       const icons = {
         success: 'fas fa-check-circle',
-        error: 'fas fa-exclamation-circle',
+        error: 'fas fa-times-circle',
         warning: 'fas fa-exclamation-triangle',
         info: 'fas fa-info-circle'
       };
-      return icons[type] || icons.info;
+      return icons[type] || 'fas fa-info-circle';
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.notification-container {
+.notification-toast-container {
   position: fixed;
   top: var(--spacing-lg);
   right: var(--spacing-lg);
-  z-index: 1001;
+  z-index: 1050;
   pointer-events: none;
+  max-width: 400px;
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     left: var(--spacing-md);
     right: var(--spacing-md);
+    max-width: none;
   }
 }
 

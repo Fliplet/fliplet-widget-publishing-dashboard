@@ -1,9 +1,9 @@
 <template>
   <transition name="fade">
-    <div class="loading-overlay" tabindex="-1" role="progressbar" aria-label="Loading">
-      <div class="loading-overlay__content">
-        <loading-spinner size="large" />
-        <p class="loading-overlay__message">{{ message }}</p>
+    <div v-if="active" class="loading-overlay">
+      <div class="loading-overlay__spinner">
+        <loading-spinner size="60px" />
+        <p v-if="message" class="loading-overlay__message">{{ message }}</p>
       </div>
     </div>
   </transition>
@@ -18,6 +18,10 @@ export default {
     LoadingSpinner
   },
   props: {
+    active: {
+      type: Boolean,
+      default: false
+    },
     message: {
       type: String,
       default: 'Loading...'
@@ -39,14 +43,18 @@ export default {
   justify-content: center;
   z-index: 1000;
 
-  &__content {
+  &__spinner {
     text-align: center;
+    background-color: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
   }
 
   &__message {
     margin-top: var(--spacing-md);
     font-size: 1.125rem;
-    color: var(--text-color, #333);
+    color: var(--text-color);
   }
 }
 
