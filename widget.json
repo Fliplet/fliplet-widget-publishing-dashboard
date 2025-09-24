@@ -20,7 +20,7 @@
   },
   "build": {
     "dependencies": [
-      "vue2",
+      "vue.js",
       "font-awesome",
       "fliplet-core"
     ],
