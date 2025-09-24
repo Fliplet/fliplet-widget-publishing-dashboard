@@ -24,11 +24,24 @@ module.exports = {
   // Module paths
   moduleDirectories: ['node_modules', 'src'],
 
+  // Module file extensions
+  moduleFileExtensions: ['js', 'json', 'vue'],
+
+  // Transform Vue files
+  transform: {
+    '.*\\.(vue)$': '<rootDir>/tests/vue-transform.js'
+  },
+
   // Ignore patterns
   testPathIgnorePatterns: [
     '/node_modules/',
     '/dist/'
   ],
+
+  // Module name mapper for assets
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': '<rootDir>/tests/style-mock.js'
+  },
 
   // Clear mocks between tests
   clearMocks: true,
