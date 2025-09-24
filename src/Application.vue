@@ -20,11 +20,15 @@
         @navigate="handleNavigation"
       />
 
-      <!-- iOS Workflow View -->
-      <div v-else-if="currentPlatform === 'ios'">
-        <h2>iOS Publishing Workflow</h2>
-        <p>iOS workflow components will be implemented here.</p>
-      </div>
+          <!-- iOS Workflow View -->
+          <ios-workflow-view
+            v-else-if="currentPlatform === 'ios'"
+            :app-info="appInfo"
+            @cancel="handlePlatformChange(null)"
+            @draft-saved="handleDraftSaved"
+            @workflow-complete="handleWorkflowComplete"
+            @view-step-details="handleViewStepDetails"
+          />
 
       <!-- Android Workflow View -->
       <div v-else-if="currentPlatform === 'android'">
@@ -50,6 +54,7 @@ import LoadingOverlay from './components/feedback/LoadingOverlay.vue';
 import NotificationToast from './components/feedback/NotificationToast.vue';
 import LoadingSpinner from './components/ui/LoadingSpinner.vue';
 import StatusIndicator from './components/ui/StatusIndicator.vue';
+import IOSWorkflowView from './components/workflow/IOSWorkflowView.vue';
 
 export default {
   name: 'PublishingDashboard',
@@ -62,7 +67,8 @@ export default {
     LoadingOverlay,
     NotificationToast,
     LoadingSpinner,
-    StatusIndicator
+    StatusIndicator,
+    IOSWorkflowView
   },
 
   data() {
@@ -205,6 +211,42 @@ export default {
         message: 'Settings will be available in a future update',
         duration: 3000
       });
+    },
+
+    handleDraftSaved(draftData) {
+      console.log('Draft saved:', draftData);
+      // Could store draft info or update UI
+      this.$root.$emit('show-notification', {
+        type: 'success',
+        message: 'Draft saved successfully',
+        duration: 3000
+      });
+    },
+
+    handleWorkflowComplete(completionData) {
+      console.log('Workflow completed:', completionData);
+      // Navigate back to dashboard or show success view
+      this.currentPlatform = null;
+      this.currentView = 'dashboard';
+      
+      // Update submission info
+      if (completionData.platform === 'ios') {
+        this.lastIosSubmission = {
+          version: completionData.data?.configuration?.version || '1.0.0',
+          timestamp: Date.now()
+        };
+      }
+      
+      this.$root.$emit('show-notification', {
+        type: 'success',
+        message: 'App submitted successfully!',
+        duration: 5000
+      });
+    },
+
+    handleViewStepDetails({ step, index }) {
+      console.log('View step details:', step, index);
+      // Could show modal or navigate to details view
     }
   }
 };
