@@ -100,9 +100,53 @@ The generated plan must follow this exact structure for compatibility with `gene
 **Purpose:** [HTTP communication responsibilities using Fliplet.API.request()]
 **Features:** [Authentication, retry logic, error handling via Fliplet API]
 **Configuration:** [How it wraps Fliplet.API.request() and handles responses]
-**Implementation:** Must use Fliplet.API.request() as documented at https://developers.fliplet.com/API/core/api.html. When implementing API requests, check `Fliplet.Navigate.query` (Object):
-- If `Fliplet.Navigate.query` contains `apiUrl`, then the custom apiUrl should be used by using the `{ apiUrl }` option.
-- If `Fliplet.Navigate.query` contains `auth_token`, then use the custom auth token by using the `{ headers: { 'Auth-token': auth_token } }` option.
+**Implementation:** Must use Fliplet.API.request() as documented at https://developers.fliplet.com/API/core/api.html.
+
+**CRITICAL IMPLEMENTATION REQUIREMENTS:**
+1. **No baseUrl needed:** Fliplet.API.request() automatically uses `Fliplet.Env.get('apiUrl')` as the default base URL, returning 'https://api.fliplet.com/' for production and 'https://staging.api.fliplet.com/' for staging etc.
+2. **Custom API URL:** Check `Fliplet.Navigate.query.apiUrl` and pass it as `{ apiUrl }` option to Fliplet.API.request() only when provided
+3. **Custom Auth Token:** Check `Fliplet.Navigate.query.auth_token` and pass it as `{ headers: { 'Auth-token': auth_token } }` option
+4. **URL handling:** Fliplet.API.request() expects base URL to end with trailing slash and endpoint to start without slash (e.g., apiUrl: 'https://api.fliplet.com/', url: 'v1/submissions')
+
+**Example Implementation Pattern:**
+```javascript
+// Constructor - no baseUrl needed
+this.config = {
+  timeout: 30000,
+  retryAttempts: 3,
+  retryDelay: 1000,
+  // ... other config
+};
+
+// Check for overrides from Fliplet.Navigate.query
+this.apiUrl = null; // Only set if custom apiUrl provided
+this.authToken = null;
+
+if (typeof Fliplet !== 'undefined' && Fliplet.Navigate && Fliplet.Navigate.query) {
+  if (Fliplet.Navigate.query.apiUrl) {
+    this.apiUrl = Fliplet.Navigate.query.apiUrl;
+  }
+  if (Fliplet.Navigate.query.auth_token) {
+    this.authToken = Fliplet.Navigate.query.auth_token;
+  }
+}
+
+// In request method
+const requestConfig = {
+  url: this.buildRequestUrl(endpoint, params), // Handles both cases
+  method: method.toUpperCase(),
+  headers: this.buildRequestHeaders(customHeaders)
+};
+
+// Add custom apiUrl only if provided
+if (this.apiUrl) {
+  requestConfig.apiUrl = this.apiUrl;
+}
+
+// buildRequestUrl method handles both cases:
+// - No custom apiUrl: return 'v1/submissions' (Fliplet.API.request() adds base URL with trailing slash)
+// - Custom apiUrl: return 'https://custom.api.com/v1/submissions' (full URL when custom apiUrl provided)
+```
 
 #### [Domain]ApiService Classes
 [For each major API domain, define:]
@@ -262,7 +306,7 @@ The generated plan must follow this exact structure for compatibility with `gene
 ## File Structure Plan
 
 ```
-src/middleware/
+/src/middleware/
 ├── core/
 │   ├── BaseMiddleware.js
 │   ├── StateManager.js

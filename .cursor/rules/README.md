@@ -104,7 +104,7 @@ graph TB
 
 ### Implementation Phase Output
 ```
-/middleware/
+/src/middleware/
 ├── core/
 │   ├── BaseMiddleware.js
 │   ├── StateManager.js

@@ -26,6 +26,17 @@ To guide an AI assistant in creating a comprehensive, UI-agnostic client-side mi
 6. **Documentation Integration:** Self-documenting code that mirrors API documentation structure
 7. **Dependency Management:** Clear dependency chains and validation requirements
 
+## Preflight & Environment Detection
+
+Before generating code, perform these checks and align behavior accordingly:
+
+- Detect project structure and base path for output (default `/src/middleware/`). Create missing folders as needed.
+- Detect existing test framework and conventions:
+  - Look for `jest.config.*`, `vitest.config.*`, `tests/setup.*`, `__tests__/`, `tests/`, and `*.test.*` files, plus a `test` script in `package.json`.
+  - If found, adopt existing conventions (file placement, setup files, scripts).
+  - If not found, ask the user whether to bootstrap a minimal Jest setup now. Proceed only on confirmation.
+- Confirm availability of the Fliplet runtime context. All HTTP must use `Fliplet.API.request()` and respect `Fliplet.Navigate.query` overrides.
+
 ## Process
 
 1. **Analyze API Documentation:** Read and analyze the provided REST API documentation files
@@ -37,6 +48,12 @@ To guide an AI assistant in creating a comprehensive, UI-agnostic client-side mi
 7. **Generate Workflow Controllers:** Create orchestration classes that manage multi-step processes
 8. **Generate Validation Framework:** Create data validation and integrity checking systems
 9. **Generate Error Handling:** Create comprehensive error handling and recovery mechanisms
+
+10. **Testing Scaffold Handling:**
+    - If a test framework exists, generate unit tests alongside each class and integration tests for key workflows using the existing conventions.
+    - If no framework exists, ask the user for permission to bootstrap a minimal Jest setup (see Testing Integration). If approved, add config, setup, scripts, and a sample test, then generate class tests.
+
+11. **Post-Generation Verification (Optional):** Ask the user whether to run tests now. If yes, run the test suite and report results. If no, skip.
 
 ## Class Structure Architecture
 
@@ -97,6 +114,15 @@ function ApiClient(baseUrl, options) {
     this.retryConfig = {};
 }
 ```
+
+##### Fliplet API Integration Requirements
+
+- All requests MUST use `Fliplet.API.request()`.
+- When present, apply URL and auth overrides from `Fliplet.Navigate.query`:
+  - If `Fliplet.Navigate.query.apiUrl` exists, pass `{ apiUrl }` in the request options.
+  - If `Fliplet.Navigate.query.auth_token` exists, pass `{ headers: { 'Auth-token': auth_token } }`.
+- Centralize this logic inside `ApiClient` so all domain services inherit consistent behavior.
+- Implement consistent error mapping to internal error types using the Error Handling standards.
 
 #### `[Domain]ApiService` (Specific API Groups)
 ```javascript
@@ -324,7 +350,7 @@ middleware.on('api.error', function(event) {
 Generate the following file structure:
 
 ```
-src/middleware/
+/src/middleware/
 ├── core/
 │   ├── BaseMiddleware.js
 │   ├── StateManager.js
@@ -357,6 +383,24 @@ Each generated class should include:
 - Mock data for testing
 - Error simulation capabilities
 
+Framework detection and bootstrapping:
+
+- Detection: If `jest.config.*`, `vitest.config.*`, a `tests/` directory, or a `test` script in `package.json` exists, follow those conventions for file placement and setup.
+- Bootstrapping (only with user confirmation): If no framework exists, generate a minimal Jest setup:
+  - Add `jest.config.js` configured for vanilla JS and the project structure
+  - Add `tests/setup.js` to stub globals (e.g., a minimal `global.Fliplet` with `API.request` and `Navigate.query`)
+  - Add npm scripts to `package.json`: `"test"`, `"test:watch"`, `"test:coverage"`
+  - Add a simple `example.test.js` to verify the setup executes correctly
+  - Co-locate `*.test.js` files next to the implementation they cover (or adopt existing test folder conventions if detected)
+
+Running tests:
+
+- After generation, ask the user: “Run tests now? (y/n)”. If yes, execute the test suite and report results. If no, skip.
+
+Mocking Fliplet:
+
+- In tests, stub `global.Fliplet` with at least `API.request` and `Navigate.query` to avoid network calls. Consider MSW or local stubs when simulating HTTP.
+
 ## UI Integration Readiness
 
 The generated middleware should:
@@ -384,3 +428,5 @@ The generated middleware should be usable by:
 6. Build in error recovery and retry mechanisms
 7. Design for testability and maintainability
 8. Prepare the middleware to serve as a foundation for UI development
+9. Enforce Fliplet API usage and `Fliplet.Navigate.query` handling within `ApiClient`
+10. Confirm with the user before adding or running tests; when approved, ensure testing scaffolding exists or is bootstrapped

@@ -134,7 +134,9 @@ afterEach(() => {
 
   // Clear Fliplet API mocks
   Fliplet.API.request.mockClear();
-  Fliplet.Navigate.query = {};
+  if (Fliplet.Navigate) {
+    Fliplet.Navigate.query = {};
+  }
 });
 
 // Set up global test timeout

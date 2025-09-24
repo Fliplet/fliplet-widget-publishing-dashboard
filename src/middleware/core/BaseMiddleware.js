@@ -246,3 +246,7 @@ class BaseMiddleware {
 if (typeof window !== 'undefined') {
   window.BaseMiddleware = BaseMiddleware;
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = BaseMiddleware;
+}

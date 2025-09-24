@@ -1001,3 +1001,7 @@ class DataMapper extends BaseMiddlewareClass {
 if (typeof window !== 'undefined') {
   window.DataMapper = DataMapper;
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = DataMapper;
+}
