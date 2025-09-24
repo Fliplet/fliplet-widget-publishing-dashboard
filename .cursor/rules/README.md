@@ -4,16 +4,17 @@ This directory contains AI assistant rules for automating development workflows.
 
 ## Available Rules
 
-### 📋 Project Planning & Requirements
+### 📋 Product Planning & Requirements
 - **`create-prd.mdc`** - Generates Product Requirements Documents from user prompts
-- **`generate-tasks.mdc`** - Creates detailed task lists from PRDs for implementation
+- **`generate-ui-plan.mdc`** - Produces stakeholder-friendly UI/UX implementation plans ready for review and task generation
+- **`generate-tasks.mdc`** - Creates detailed task lists from PRDs or UI plans for implementation
 - **`process-task-list.mdc`** - Manages task execution with proper testing and commit protocols
 
-### 🏗️ Middleware Development Workflow
+### 🏗️ Middleware Development Workflow (CSD)
 - **`generate-middleware-plan.mdc`** - Creates comprehensive middleware architecture plans from API documentation
 - **`generate-class-structure.mdc`** - Reference architecture for UI-agnostic middleware systems
 
-## 🔄 Complete Middleware Development Workflow
+## 🔄 Complete Middleware Development Workflow (CSD)
 
 The middleware development follows a structured 3-step process that ensures proper review and validation at each stage:
 
@@ -93,13 +94,88 @@ graph TB
 
 **Review Points:** Human approval required before each sub-task execution.
 
+## 🎨 Product UI Planning Workflow (Product Team)
+
+The Product workflow ensures every experience is planned, validated, and brand-aligned before engineering begins. It produces a UI plan that non-developers can understand and review, while creating a clean handoff into the existing CSD task execution pipeline.
+
+```mermaid
+graph TB
+    A[Product Brief or Prompt] --> B[generate-ui-plan.mdc]
+    B --> C[ui-plan-[name].md<br/>🎨 UI/UX Plan]
+    C --> D{AI + Human Review<br/>✅ Experience}
+    D --> E[generate-tasks.mdc]
+    E --> F[tasks-ui-plan-[name].md<br/>📋 Task List]
+    F --> G{Human Review<br/>✅ Tasks}
+    G --> H[process-task-list.mdc]
+    H --> I[Implemented Experience<br/>🚀 Delivery]
+
+    style A fill:#e1f5fe
+    style C fill:#fce4ec
+    style F fill:#fff3e0
+    style I fill:#e8f5e8
+```
+
+### Step 1: UI Planning
+
+**Purpose:** Translate product goals, branding guidelines, and middleware capabilities into a comprehensive UI/UX implementation plan that non-technical stakeholders can validate.
+
+```bash
+# User Command: Reference generate-ui-plan.mdc
+# Input: Product brief, @tasks/prd-*.md (optional), @tasks/middleware-plan-*.md (optional)
+# Output: /tasks/ui-plan-[project-or-feature-name].md
+```
+
+**What It Creates:**
+- Screen inventory and responsive layout guidance
+- Component usage and theming rules tied to Fliplet branding
+- Accessibility, localization, and content requirements
+- Review checklists for AI and human stakeholders
+
+**Review Point:** Product and Design review the UI plan for completeness, usability, and brand alignment.
+
+### Step 2: Task Generation
+
+**Purpose:** Convert the approved UI plan into actionable tasks for engineering.
+
+```bash
+# User Command: Reference generate-tasks.mdc with UI plan
+# Input: @tasks/ui-plan-[project-or-feature-name].md
+# Output: /tasks/tasks-ui-plan-[project-or-feature-name].md
+```
+
+**What It Creates:**
+- Parent and sub-task breakdown aligned with UI requirements
+- Relevant file inventory, including tests and assets
+- Sequencing and dependency notes for implementation
+
+**Review Point:** Product/Design and Engineering confirm the task breakdown before handoff to CSD execution.
+
+### Step 3: Implementation Execution (CSD)
+
+**Purpose:** Follow the existing CSD process (`process-task-list.mdc`) to implement the UI, middleware, and supporting workstreams defined by the Product plan.
+
+```bash
+# User Command: Reference process-task-list.mdc
+# Input: /tasks/tasks-ui-plan-[project-or-feature-name].md
+# Output: Completed UI aligned with Product plan
+```
+
+**What It Does:**
+- Executes one sub-task at a time with testing and commits
+- Keeps Product stakeholders informed via task status updates
+- Ensures alignment with middleware and branding requirements documented in the UI plan
+
+**Review Points:** Product and CSD collaborate on acceptance testing and feedback loops at each sub-task milestone.
+
 ## 📁 Generated File Structure
 
 ### Planning Phase Output
 ```
 /tasks/
-├── middleware-plan-[project-name].md    # Architecture plan
-└── tasks-middleware-plan-[project-name].md  # Implementation tasks
+├── ui-plan-[project-or-feature-name].md         # Product UI/UX plan
+├── tasks-ui-plan-[project-or-feature-name].md   # Task list generated from UI plan
+├── middleware-plan-[project-name].md            # Middleware architecture plan
+└── tasks-middleware-plan-[project-name].md      # Implementation tasks from middleware plan
 ```
 
 ### Implementation Phase Output
@@ -150,6 +226,29 @@ graph TB
 - Modular rule system
 
 ## 🚀 Usage Examples
+
+### Planning a Publishing Dashboard UI Experience
+
+1. **Generate UI Plan:**
+   ```
+   Reference: @.cursor/rules/generate-ui-plan.mdc
+   Context: Product brief + @tasks/middleware-plan-publishing-dashboard.md
+   Output: /tasks/ui-plan-publishing-dashboard.md
+   ```
+
+2. **Generate Tasks:**
+   ```
+   Reference: @.cursor/rules/generate-tasks.mdc
+   Input: @tasks/ui-plan-publishing-dashboard.md
+   Output: /tasks/tasks-ui-plan-publishing-dashboard.md
+   ```
+
+3. **Execute Implementation:**
+   ```
+   Reference: @.cursor/rules/process-task-list.mdc
+   Input: @tasks/tasks-ui-plan-publishing-dashboard.md
+   Output: Live UI aligned with Product plan
+   ```
 
 ### Creating a Publishing Dashboard Middleware
 
