@@ -16,15 +16,55 @@ To guide an AI assistant in analyzing existing middleware architecture and creat
 - **Filename:** `ui-plan-[project-name].md`
 - **Purpose:** Comprehensive UI/UX plan ready for review and task generation
 
+## Important Technical Context
+
+### Vue.js Version
+
+This rule generates UI plans for **Vue.js v2.6.14** projects. All component syntax, lifecycle hooks, and API usage should be compatible with Vue 2.6.14.
+
+### Widget Context
+
+Before generating the UI plan, clarify with the user whether the UI is being built for:
+- **Interface Context:** Configuration UI shown in Fliplet Studio (widget settings)
+- **Build Context:** Runtime UI shown to end users in the published app
+
+### Essential Documentation References
+
+```yaml
+# MUST READ - Include these in your context window
+
+- url: https://api.fliplet.com/v1/widgets/assets
+  why: Complete list of available assets (CSS/JS libraries) that widgets can use
+  critical: Check available versions and dependencies before suggesting libraries
+
+- url: https://developers.fliplet.com/Dependencies-and-assets.html
+  why: Explains how to properly include assets and manage dependencies in widgets
+  section: Focus on "Declaring dependencies" and "Loading assets dynamically"
+
+- url: https://developers.fliplet.com/Introduction.html
+  why: Core concepts for building Fliplet widgets (components)
+  critical: Understand the widget lifecycle and build/interface contexts
+
+- file: widget.json
+  why: Widget configuration file that defines dependencies and settings
+  critical: Check existing dependencies before suggesting new ones
+
+- doc: /tasks/middleware-plan-[project-name].md
+  why: The middleware architecture this UI plan must integrate with
+  critical: Understand available services, data flows, and state management
+```
+
 ## Process
 
-1. **Analyze Middleware Architecture:** Read and understand the existing middleware plan and implementation
-2. **Identify UI Requirements:** Extract user workflows, data displays, and interaction patterns
-3. **Design Component Architecture:** Create reusable Vue.js components that integrate with middleware
-4. **Plan Responsive Layouts:** Design mobile-first responsive interfaces
-5. **Define Customization Framework:** Plan theming and branding customization
-6. **Document Accessibility:** Ensure WCAG 2.1 AA compliance throughout
-7. **Generate Plan Document:** Create structured markdown plan ready for review and task generation
+1. **Clarify Context:** Determine if building for interface or build context
+2. **Analyze Middleware Architecture:** Read and understand the existing middleware plan and implementation
+3. **Check Available Assets:** Review Fliplet's asset library for compatible dependencies
+4. **Identify UI Requirements:** Extract user workflows, data displays, and interaction patterns
+5. **Design Component Architecture:** Create reusable Vue.js 2.6.14 components that integrate with middleware
+6. **Plan Responsive Layouts:** Design mobile-first responsive interfaces
+7. **Define Customization Framework:** Plan theming and branding customization
+8. **Document Accessibility:** Ensure WCAG 2.1 AA compliance throughout
+9. **Generate Plan Document:** Create structured markdown plan ready for review and task generation
 
 ## Input Requirements
 
@@ -54,6 +94,16 @@ The generated plan must follow this exact structure for compatibility with `gene
 
 ## Overview
 [Brief description of the UI system, its purpose, and target users]
+
+## Technical Stack
+
+### Framework
+- **Vue.js Version:** 2.6.14 (if Vue is used)
+- **Component API:** Options API (Vue 2 style)
+- **Build Context:** [interface|build] - Specify which context this UI serves
+
+### Available Dependencies
+[List dependencies from widget.json and Fliplet asset library]
 
 ## Design Principles
 
@@ -206,25 +256,25 @@ $breakpoints: (
 ```css
 :root {
   /* Brand Colors */
-  --primary-color: #0087be;
-  --secondary-color: #00acc1;
-  --accent-color: #ff6900;
-  
+  --primary-color: #00abd1;
+  --secondary-color: #eae9ec;
+  --accent-color: #36344c;
+
   /* Semantic Colors */
-  --success-color: #4caf50;
-  --warning-color: #ff9800;
-  --error-color: #f44336;
-  --info-color: #2196f3;
-  
+  --success-color: #19cd9d
+  --warning-color: #ed9119;
+  --error-color: #e03629;
+  --info-color: #413e5b;
+
   /* Typography */
-  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
-  --font-size-base: 16px;
-  --line-height-base: 1.5;
-  
+  --font-family-base: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-size-base: 14px;
+  --line-height-base: 1.428571429;
+
   /* Spacing */
   --spacing-unit: 8px;
   --container-max-width: 1200px;
-  
+
   /* Shadows & Borders */
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
   --border-radius: 4px;
@@ -287,7 +337,7 @@ $breakpoints: (
   <nav role="navigation" aria-label="Main navigation">
     <ul role="list">
       <li v-for="item in navItems" :key="item.id">
-        <a 
+        <a
           :href="item.url"
           :aria-current="item.active ? 'page' : null"
           @click="handleNavigation"
@@ -338,7 +388,7 @@ $breakpoints: (
 
 ### State Management Integration
 ```javascript
-// Example Vue.js integration with middleware
+// Example Vue.js 2.6.14 integration with middleware
 export default {
   data() {
     return {
@@ -347,17 +397,18 @@ export default {
       error: null
     };
   },
-  
+
   async created() {
     try {
       this.loading = true;
       // Get current state from middleware
-      this.workflowState = await window.PublishingDashboard
+      // Replace [WidgetName] with actual widget global namespace
+      this.workflowState = await window.[WidgetName]
         .middleware
         .stateManager
-        .getWorkflowState('publishing');
+        .getWorkflowState('[workflow-name]');
     } catch (error) {
-      this.error = window.PublishingDashboard
+      this.error = window.[WidgetName]
         .middleware
         .errorHandler
         .getUserMessage(error);
@@ -370,15 +421,17 @@ export default {
 
 ### Event System Integration
 ```javascript
-// Listen for middleware events
+// Listen for middleware events in Vue 2.6.14
 mounted() {
-  window.PublishingDashboard.middleware.on('workflow:updated', this.handleWorkflowUpdate);
-  window.PublishingDashboard.middleware.on('error:occurred', this.handleError);
+  // Replace [WidgetName] with actual widget global namespace
+  window.[WidgetName].middleware.on('workflow:updated', this.handleWorkflowUpdate);
+  window.[WidgetName].middleware.on('error:occurred', this.handleError);
 },
 
+// Vue 2 lifecycle hook
 beforeDestroy() {
-  window.PublishingDashboard.middleware.off('workflow:updated', this.handleWorkflowUpdate);
-  window.PublishingDashboard.middleware.off('error:occurred', this.handleError);
+  window.[WidgetName].middleware.off('workflow:updated', this.handleWorkflowUpdate);
+  window.[WidgetName].middleware.off('error:occurred', this.handleError);
 }
 ```
 
@@ -395,16 +448,17 @@ beforeDestroy() {
 <script>
 /**
  * ComponentName - Brief description
- * 
+ * Vue 2.6.14 component using Options API
+ *
  * @example
- * <ComponentName 
+ * <ComponentName
  *   :prop1="value"
  *   @event="handler"
  * />
  */
 export default {
   name: 'ComponentName',
-  
+
   props: {
     /**
      * Prop description
@@ -419,10 +473,44 @@ export default {
       }
     }
   },
-  
-  emits: ['event-name'],
-  
-  // ... rest of component
+
+  // Vue 2 doesn't have emits option, events are documented via comments
+  // Events: event-name
+
+  data() {
+    return {
+      // Component state
+    };
+  },
+
+  computed: {
+    computedClasses() {
+      return {
+        'is-active': this.isActive,
+        'has-error': this.hasError
+      };
+    }
+  },
+
+  methods: {
+    handleEvent() {
+      // Emit events using Vue 2 syntax
+      this.$emit('event-name', payload);
+    }
+  },
+
+  // Vue 2 lifecycle hooks
+  created() {
+    // Component initialization
+  },
+
+  mounted() {
+    // DOM is ready
+  },
+
+  beforeDestroy() {
+    // Cleanup before component destruction
+  }
 };
 </script>
 
@@ -536,7 +624,7 @@ export default {
 This UI/UX plan should be reviewed for:
 1. **User Experience:** Intuitive workflows and clear interactions
 2. **Visual Design:** Consistent with Fliplet brand guidelines
-3. **Technical Feasibility:** Vue.js implementation approach
+3. **Technical Feasibility:** Vue.js 2.6.14 implementation approach
 4. **Accessibility:** WCAG 2.1 AA compliance throughout
 5. **Performance:** Optimal loading and runtime performance
 
@@ -580,11 +668,15 @@ The generated plan should be suitable for:
 
 ## Final Instructions
 
-1. **Analyze the middleware architecture** thoroughly before beginning
-2. **Create a complete UI/UX plan** that addresses every user touchpoint
-3. **Ensure the plan structure** matches the required format exactly
-4. **Design for Vue.js** within Fliplet's framework constraints
-5. **Include specific details** that can be converted to actionable tasks
-6. **Plan for accessibility** and responsive design throughout
-7. **Consider non-technical reviewers** in your language choices
-8. **Prepare for task generation** by including implementation details
+1. **Check widget context** - Clarify if building for interface or build context
+2. **Review Fliplet documentation** - Use the reference table to understand constraints
+3. **Analyze the middleware architecture** thoroughly before beginning
+4. **Verify available assets** - Check widget.json and Fliplet asset library
+5. **Create a complete UI/UX plan** that addresses every user touchpoint
+6. **Ensure the plan structure** matches the required format exactly
+7. **Design for Vue.js 2.6.14** within Fliplet's framework constraints
+8. **Use generic naming** - Replace [WidgetName], [project-name] with actual values
+9. **Include specific details** that can be converted to actionable tasks
+10. **Plan for accessibility** and responsive design throughout
+11. **Consider non-technical reviewers** in your language choices
+12. **Prepare for task generation** by including implementation details
