@@ -1,0 +1,166 @@
+---
+description: Generating Product UI/UX Implementation Plans for Review and Task Generation
+globs:
+  alwaysApply: false
+---
+# Rule: Generating Product UI/UX Implementation Plans
+
+## Goal
+
+Guide an AI assistant through the creation of a comprehensive, non-technical UI/UX implementation plan that Product Managers and Designers can use to validate responsive experiences, confirm alignment with Fliplet branding, and hand off to engineering for task generation.
+
+## Output
+
+- **Format:** Markdown (`.md`)
+- **Location:** `/tasks/`
+- **Filename:** `ui-plan-[project-or-feature-name].md`
+- **Primary Readers:** Product Managers, Designers, non-technical stakeholders, and AI reviewers
+- **Downstream Use:** Serves as the sole input for `generate-tasks.mdc` and subsequent execution via `process-task-list.mdc`
+
+## Inputs & Prerequisites
+
+1. **Product Brief or Prompt:** Initial description of the desired UI/UX outcome.
+2. **Reference Materials (as available):**
+   - Approved PRD (`@tasks/prd-*.md`) and/or middleware plan (`@tasks/middleware-plan-*.md`)
+   - Existing Fliplet design tokens, brand guidelines, or component library references
+   - Any relevant analytics, customer feedback, or accessibility requirements
+3. **Environment Review:** Inspect repository resources (`/src/`, `/docs/`, `/dist/`) to understand current UI foundations and reusable components.
+
+## Mandatory Clarification Step
+
+Before drafting the plan, the AI **must** ask clarifying questions whenever context is incomplete. Focus on:
+- Target personas and usage scenarios
+- Priority devices and breakpoints
+- Brand customization expectations (color palettes, typography, iconography)
+- Content source of truth (copy, imagery, data)
+- Success metrics and qualitative experience goals
+- Accessibility requirements (WCAG level, localization, language support)
+
+## Process
+
+1. **Collect Context:** Read all provided briefs, PRDs, middleware plans, and design references. Inventory existing UI assets.
+2. **Clarify Ambiguities:** Ask targeted questions until the desired experience is fully understood. Confirm approval before proceeding.
+3. **Align with Middleware:** Summarize how the UI will interact with the planned middleware flows, ensuring data, states, and validation paths line up.
+4. **Establish Experience Principles:** Define the experience goals, tonal direction, and Fliplet brand alignment that the UI must honor.
+5. **Map Screens & States:** List every screen/view, responsive breakpoint, dialog, and empty/loading/error state required to fulfill the experience.
+6. **Detail Screen Specifications:** For each screen, document layout blueprints, content structure, component usage, states, interactions, accessibility notes, and configuration options using non-technical language.
+7. **Define Cross-Screen Journeys:** Document navigation flows, entry/exit points, and back/forward behaviors, including how middleware state drives UI transitions.
+8. **Plan Theming & Customization:** Specify how Fliplet branding (colors, typography, spacing, iconography) and white-label options are applied and configurable.
+9. **Draft Review Checklists:** Provide explicit AI + human review criteria to validate completeness, responsiveness, accessibility, and brand adherence.
+10. **Summarize Delivery & Next Steps:** Highlight open questions, dependencies, analytics requirements, and testing expectations that will inform task generation.
+11. **Save Plan:** Export as `/tasks/ui-plan-[project-or-feature-name].md` ready for review and task conversion.
+
+## Required Plan Structure
+
+The generated UI plan **must** follow this structure verbatim to stay compatible with downstream tooling:
+
+```markdown
+# UI Plan: [Project or Feature Name]
+
+## 1. Executive Summary
+- **Objective:** [Plain-language description of the experience]
+- **Primary Users & Scenarios:** [Bullet list of personas and key jobs-to-be-done]
+- **Success Metrics:** [Quantitative + qualitative measures]
+- **Dependencies:** [Links to PRD, middleware plan, APIs, assets]
+
+## 2. Experience Principles & Brand Alignment
+- **Experience Pillars:** [3-5 guiding principles phrased for non-developers]
+- **Tone & Content Direction:** [Voice, microcopy style, content priorities]
+- **Fliplet Branding Hooks:** [Logo usage, color tokens, typography, illustration/icon rules]
+- **Customization Controls:** [How customers can configure colors, fonts, imagery]
+
+## 3. Audience, Context & Accessibility
+- **Personas & Goals:** [Table with persona, needs, accessibility considerations]
+- **Usage Contexts:** [Device environments, connectivity assumptions, session length]
+- **Accessibility Requirements:** [WCAG targets, keyboard/touch support, localization]
+- **Device & Breakpoint Matrix:** [Table of breakpoints (Mobile / Tablet / Desktop) with support notes]
+
+## 4. Screen Inventory & Flow Overview
+- **Screen Index:** [Table listing each screen/view/dialog, primary purpose, related middleware workflow]
+- **Journey Overview:** [Mermaid user-flow diagram or numbered journey steps]
+- **Entry & Exit Points:** [How users reach each screen and what completes it]
+- **Global Navigation:** [Header/footer/nav behaviors across breakpoints]
+
+## 5. Screen Specifications
+For each screen or view, include a dedicated subsection using this template:
+
+### Screen [Number]: [Screen Name]
+- **Purpose & Key Outcomes:** [...]
+- **User Entry Points:** [...]
+- **Connected Middleware Workflow:** [...]
+- **Data Requirements:** [Inputs, outputs, API bindings, state dependencies]
+- **Layout Blueprint:**
+  - **Mobile (<768px):** [Stack order, component placement, spacing]
+  - **Tablet (768-1024px):** [...]
+  - **Desktop (>1024px):** [...]
+- **Component Breakdown:** [Bullet list referencing Fliplet components, custom widgets, reusable blocks]
+- **States & Variants:** [Default, loading, empty, success, error, locked]
+- **Interactions & Gestures:** [Click/tap/drag behaviors, hover/focus states, keyboard shortcuts]
+- **Content Guidance:** [Headings, body copy, CTAs, tooltips, error messages]
+- **Accessibility Notes:** [Tab order, aria roles, contrast requirements]
+- **Brand & Theming Hooks:** [Configurable colors, typography, imagery, white-label areas]
+- **Validation & Error Handling:** [Client-side validation rules, inline feedback]
+- **Analytics & Telemetry:** [Events, data points, success indicators]
+- **Review Checklist:** [3-5 yes/no criteria for AI + human validation]
+
+## 6. Cross-Screen Flows & Edge Cases
+- **Primary Journeys:** [Step-by-step flows linking screens, including conditional branches]
+- **Edge Cases:** [Timeouts, permission issues, missing data, repeated actions]
+- **Offline & Low-Bandwidth Handling:** [Graceful degradation strategies]
+- **Undo / Recovery Patterns:** [How users recover from mistakes]
+
+## 7. Components, Patterns & Assets
+- **Component Library Usage:** [Existing Fliplet components leveraged]
+- **New Components Required:** [Descriptions, purpose, props/configurations]
+- **Reusable Patterns:** [Cards, lists, tables, forms, modals]
+- **Asset Requirements:** [Icons, imagery, illustrations, animations]
+- **Content Source of Truth:** [CMS, spreadsheets, translations, legal copy]
+
+## 8. Configuration, Theming & Localization
+- **Admin Controls:** [Which aspects are configurable without code]
+- **Theme Variables:** [Color tokens, typography scale, spacing units]
+- **Localization Strategy:** [Supported languages, RTL considerations, copy handoff]
+- **White-Label Scenarios:** [How partners can customize branding]
+
+## 9. Quality & Review Checklists
+- **AI Review Checklist:** [Objective criteria for automated validation]
+- **Human Review Checklist:** [Product/Design sign-off requirements]
+- **Responsive QA Matrix:** [Table mapping breakpoints × browsers/devices × pass criteria]
+- **Accessibility Verification:** [Checklist for screen readers, keyboard nav, contrast]
+
+## 10. Open Questions & Follow-Ups
+- **Outstanding Decisions:** [Items awaiting stakeholder input]
+- **Risks & Mitigations:** [Experience risks and proposed safeguards]
+- **Dependencies for Engineering:** [Data, middleware milestones, external teams]
+- **Next Steps for Task Generation:** [Instructions for handing plan to `generate-tasks.mdc`]
+
+## Appendix (Optional)
+- **Wireframe References:** [Links or descriptions]
+- **Copy Deck:** [Sample content blocks]
+- **Design Token Summary:** [Key variables and JSON/YAML references]
+- **User Testing Plan:** [If formative testing is required pre-build]
+```
+
+## Documentation Standards
+
+- Use plain language understandable by non-developers; avoid code unless necessary for clarity.
+- Leverage tables, bullet lists, and diagrams to visualize flows and layouts.
+- Call out all responsive behaviors explicitly; never assume automatic responsiveness.
+- Reference Fliplet’s component names and branding tokens where applicable.
+- Distinguish between mandatory requirements vs. optional enhancements.
+- Ensure every screen has at least one review checklist item covering usability, responsiveness, and accessibility.
+
+## Review & Handoff Requirements
+
+1. **Self-Review:** Confirm every checklist item in section 9 can be satisfied by the documented plan.
+2. **AI Review Ready:** Structure information so automated reviewers can parse requirements (use consistent headings and bullet styles).
+3. **Human Sign-Off:** Highlight decisions requiring PM/Design approval before task generation.
+4. **Task Generation Prep:** Ensure each major bullet can translate directly into actionable engineering tasks.
+
+## Final Instructions
+
+1. **Do not generate UI assets** (mockups, code, CSS). Produce documentation only.
+2. **Always** save the plan to `/tasks/ui-plan-[project-or-feature-name].md`.
+3. **Cross-reference middleware plans** to maintain parity between UI flows and backend logic.
+4. **Flag missing information** in section 10 with clear owners and due dates.
+5. **Prepare for iteration:** The document should be easy to update after stakeholder or AI feedback.
