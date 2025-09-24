@@ -243,6 +243,22 @@ The generated plan must follow this exact structure for compatibility with `gene
 ### Configuration Management
 [How the system is configured and initialized]
 
+## Testing Foundations
+
+### Framework & Conventions
+- [Selected framework and rationale, e.g., Jest for vanilla JS]
+- [Directory layout for tests, e.g., src/**/Class.test.js alongside implementation]
+- [Coverage targets and thresholds]
+
+### Setup Artifacts
+- [Configuration files to include, e.g., jest.config.js, tests/setup.js]
+- [npm scripts to add: "test", "test:watch", "test:coverage"]
+- [Mocking strategy for Fliplet APIs (e.g., MSW or stubbed globals)]
+
+### Execution & CI
+- [Commands to run tests locally]
+- [How tests are invoked in CI and required to pass before merges]
+
 ## File Structure Plan
 
 ```
@@ -279,6 +295,14 @@ src/middleware/
 - **Self-Documenting:** Comprehensive JSDoc documentation
 
 ### Testing Strategy
+- **Framework Detection (existing codebases):** Before planning tests, identify if a framework already exists by checking for files like `jest.config.*`, `vitest.config.*`, test directories (`__tests__`, `tests`, `*.test.js`), and `package.json` scripts (`test`). If present, conform to existing conventions (folders, scripts, matchers, setup files).
+- **Bootstrapping (new projects):** If no framework is detected, the plan MUST include a dedicated "Testing Foundations" section that specifies:
+  - Framework: Prefer Jest for vanilla JavaScript projects
+  - Config files: `jest.config.js`, `tests/setup.js` (global stubs for `Fliplet`), and optional `tests/mocks/`
+  - Scripts: add `"test": "jest"`, `"test:watch": "jest --watch"`, `"test:coverage": "jest --coverage"` to `package.json`
+  - Test placement: colocate `*.test.js` files next to the code they verify
+  - Minimum coverage thresholds and how to enforce them
+  - How to mock Fliplet APIs (e.g., global `Fliplet` stubs or MSW when HTTP is required)
 - **Unit Tests:** One test file per class
 - **Integration Tests:** Workflow testing scenarios
 - **Mock Data:** Complete mock datasets for testing

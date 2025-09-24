@@ -12,7 +12,12 @@ Guidelines for managing task lists in markdown files to track progress on comple
 - **Completion protocol:**
   1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
-    - **First**: Run the full test suite (`pytest`, `npm test`, `bin/rails test`, etc.)
+    - **Confirm tests**: Ask the user if they want to add/run tests now (respond with "y" to proceed or "n" to skip for this parent task).
+    - If user says "y":
+      - Detect whether a test framework exists (e.g., `pytest`, `jest`, `vitest`, Rails test). If it exists, run the full test suite (`pytest`, `npm test`, `bin/rails test`, etc.).
+      - If no framework exists, ask the user if they want to bootstrap a minimal test setup now. If "y", add/setup the framework per project conventions, then run the tests. If "n", skip tests for this parent task.
+    - If user says "n": Skip tests for this parent task.
+    - **Proceed** only if tests (when run) pass, or if the user chose to skip tests:
     - **Only if all tests pass**: Stage changes (`git add .`)
     - **Clean up**: Remove any temporary files and temporary code before committing
     - **Commit**: Use a descriptive commit message that:
@@ -50,3 +55,4 @@ When working with task lists, the AI must:
 4. Keep "Relevant Files" accurate and up to date.
 5. Before starting work, check which sub‑task is next.
 6. After implementing a sub‑task, update the file and then pause for user approval.
+7. Before running tests or bootstrapping a test framework, explicitly ask the user to confirm whether they want to add/run tests now and respect their choice.
