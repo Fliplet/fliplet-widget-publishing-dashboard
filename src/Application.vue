@@ -30,11 +30,14 @@
             @view-step-details="handleViewStepDetails"
           />
 
-      <!-- Android Workflow View -->
-      <div v-else-if="currentPlatform === 'android'">
-        <h2>Android Publishing Workflow</h2>
-        <p>Android workflow components will be implemented here.</p>
-      </div>
+          <!-- Android Workflow View -->
+          <android-workflow-view
+            v-else-if="currentPlatform === 'android'"
+            :app-info="appInfo"
+            @cancel="handlePlatformChange(null)"
+            @draft-saved="handleDraftSaved"
+            @workflow-complete="handleWorkflowComplete"
+          />
 
       <!-- Admin/Permissions View -->
       <div v-else-if="currentView === 'permissions'">
@@ -55,6 +58,7 @@ import NotificationToast from './components/feedback/NotificationToast.vue';
 import LoadingSpinner from './components/ui/LoadingSpinner.vue';
 import StatusIndicator from './components/ui/StatusIndicator.vue';
 import IOSWorkflowView from './components/workflow/IOSWorkflowView.vue';
+import AndroidWorkflowView from './components/workflow/AndroidWorkflowView.vue';
 
 export default {
   name: 'PublishingDashboard',
@@ -68,7 +72,8 @@ export default {
     NotificationToast,
     LoadingSpinner,
     StatusIndicator,
-    IOSWorkflowView
+    IOSWorkflowView,
+    AndroidWorkflowView
   },
 
   data() {
