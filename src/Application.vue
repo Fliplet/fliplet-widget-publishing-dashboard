@@ -258,78 +258,17 @@ export default {
 </script>
 
 <style lang="scss">
-// Import CSS variables and base styles
-:root {
-  // Fliplet Brand Colors
-  --primary-color: #00abd1;
-  --secondary-color: #36344c;
-  --accent-color: #e4f4f7;
-  
-  // Platform Colors
-  --ios-color: #007aff;
-  --android-color: #3ddc84;
-  
-  // Semantic Colors
-  --success-color: #28a745;
-  --warning-color: #ffc107;
-  --error-color: #dc3545;
-  --info-color: #17a2b8;
-  
-  // Typography
-  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  --font-size-base: 14px;
-  --line-height-base: 1.5;
-  
-  // Text Colors
-  --text-color: #333;
-  --text-color-secondary: #666;
-  
-  // Spacing
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  
-  // Layout
-  --container-max-width: 1200px;
-  
-  // Components
-  --border-radius: 6px;
-  --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-  --transition-speed: 200ms;
-}
-
-// Global styles
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-base);
-  color: var(--text-color);
-  background-color: #f5f5f5;
-}
+@import '@/styles/global.scss';
 
 // Dashboard container
 .dashboard-container {
   min-height: calc(100vh - 200px); // Account for header and footer
-}
+  padding: var(--spacing-lg);
+  max-width: var(--container-max-width);
+  margin: 0 auto;
 
-// Utility classes
-.text-center {
-  text-align: center;
-}
-
-.mt-lg {
-  margin-top: var(--spacing-lg);
-}
-
-.mb-lg {
-  margin-bottom: var(--spacing-lg);
+  @include sm-down {
+    padding: var(--spacing-md);
+  }
 }
 </style>
