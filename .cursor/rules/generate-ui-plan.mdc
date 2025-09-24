@@ -35,7 +35,7 @@ Before generating the UI plan, clarify with the user whether the UI is being bui
 
 - url: https://api.fliplet.com/v1/widgets/assets
   why: Complete list of available assets (CSS/JS libraries) that widgets can use
-  critical: Check available versions and dependencies before suggesting libraries
+  critical: Check available versions, latest version and dependencies before suggesting libraries
 
 - url: https://developers.fliplet.com/Dependencies-and-assets.html
   why: Explains how to properly include assets and manage dependencies in widgets
@@ -435,6 +435,224 @@ beforeDestroy() {
 }
 ```
 
+## Implementation Guidelines
+
+### Fliplet Widget File Loading & Dependencies
+
+**CRITICAL:** All CSS and JavaScript files must be properly declared in `widget.json` to be loaded by Fliplet. Files cannot be loaded independently - they must follow Fliplet's asset management system.
+
+#### Widget.json Configuration
+
+Every UI component file must be declared in `widget.json` under the appropriate context:
+
+```json
+{
+  "name": "Widget Name",
+  "build": {
+    "dependencies": [
+      "jquery",
+      "bootstrap"
+    ],
+    "assets": [
+      "css/build.css",
+      "js/components/layout/app-shell.js",
+      "js/components/pages/dashboard-view.js",
+      "js/components/ui/data-table.js",
+      "js/build.js"
+    ]
+  },
+  "interface": {
+    "dependencies": [
+      "jquery",
+      "bootstrap",
+      "fliplet-studio-ui"
+    ],
+    "assets": [
+      "css/interface.css",
+      "js/components/forms/settings-form.js",
+      "js/interface.js"
+    ]
+  }
+}
+```
+
+#### Dependency Requirements
+
+**Available Dependencies:** All dependencies must be available in [Fliplet's asset library](https://api.fliplet.com/v1/widgets/assets). Check the API endpoint before specifying any dependency.
+
+**Context-Specific Loading:**
+- **Build Context:** Files loaded in the published app for end users
+- **Interface Context:** Files loaded in Fliplet Studio for configuration
+
+#### File Organization Strategy
+
+```
+/css/
+├── build.css          # Compiled styles for end users
+├── interface.css      # Compiled styles for Studio
+└── components/        # Individual component styles (pre-build)
+    ├── layout/
+    ├── forms/
+    └── ui/
+
+/js/
+├── build.js           # Main entry point for end users
+├── interface.js       # Main entry point for Studio
+└── components/        # Individual components
+    ├── layout/
+    │   ├── app-shell.js
+    │   └── navigation-header.js
+    ├── pages/
+    │   └── dashboard-view.js
+    ├── forms/
+    │   └── settings-form.js
+    └── ui/
+        ├── data-table.js
+        └── status-indicator.js
+```
+
+#### HTML Template Integration
+
+**Build Context Templates:** Must be in `build.html` or loaded via JavaScript:
+```html
+<!-- build.html -->
+<div id="app">
+  <!-- Component templates go here -->
+</div>
+
+<!-- OR loaded dynamically -->
+<script>
+window.[WidgetName].templates = {
+  'app-shell': '<div class="app-shell">...</div>',
+  'data-table': '<table class="data-table">...</table>'
+};
+</script>
+```
+
+**Interface Context Templates:** Must be in `interface.html` or loaded via JavaScript:
+```html
+<!-- interface.html -->
+<div class="widget-settings">
+  <!-- Configuration UI templates -->
+</div>
+```
+
+#### Asset Loading Order
+
+Files are loaded in the exact order listed in the `assets` array:
+
+```json
+{
+  "build": {
+    "assets": [
+      "css/base.css",           // 1. Base styles first
+      "css/components.css",     // 2. Component styles
+      "css/themes.css",         // 3. Theme overrides
+      "js/utils.js",           // 4. Utilities first
+      "js/components/base.js",  // 5. Base components
+      "js/components/ui.js",    // 6. UI components
+      "js/main.js"             // 7. Main application last
+    ]
+  }
+}
+```
+
+#### Build Optimization Options
+
+**Option 1: Manual Compilation**
+Use build tools (gulp, webpack) to compile multiple files:
+
+```json
+{
+  "build": {
+    "assets": [
+      "dist/app.min.css",    # Single compiled CSS
+      "dist/app.min.js"      # Single compiled JS
+    ]
+  }
+}
+```
+
+**Option 2: Fliplet Auto-Concatenation**
+List individual files - Fliplet automatically concatenates in production:
+
+```json
+{
+  "build": {
+    "assets": [
+      "css/base.css",
+      "css/layout.css",
+      "css/forms.css",
+      "css/ui.css",
+      "js/utils.js",
+      "js/components.js",
+      "js/main.js"
+    ]
+  }
+}
+```
+
+#### Vue.js 2.6.14 Component Loading
+
+**Component Registration Pattern:**
+```javascript
+// Each component file should register itself globally
+(function() {
+  'use strict';
+
+  // Replace [WidgetName] with actual widget namespace
+  window.[WidgetName] = window.[WidgetName] || {};
+  window.[WidgetName].components = window.[WidgetName].components || {};
+
+  // Register component
+  window.[WidgetName].components['AppShell'] = {
+    template: window.[WidgetName].templates['app-shell'],
+    props: ['branding', 'navigation'],
+    data() {
+      return {
+        // component state
+      };
+    },
+    methods: {
+      // component methods
+    }
+  };
+})();
+```
+
+**Main Application Registration:**
+```javascript
+// main.js - loaded last in assets array
+(function() {
+  'use strict';
+
+  // Create Vue app with all registered components
+  window.[WidgetName].app = new Vue({
+    el: '#app',
+    components: window.[WidgetName].components,
+    data: {
+      // app state
+    }
+  });
+})();
+```
+
+#### Critical Implementation Checklist
+
+Before generating UI implementation tasks, verify:
+
+1. **✅ Context Clarity:** Confirmed whether building for interface or build context
+2. **✅ Dependency Check:** All dependencies exist in [Fliplet's asset library](https://api.fliplet.com/v1/widgets/assets)
+3. **✅ File Declaration:** Every CSS/JS file listed in appropriate widget.json context
+4. **✅ Load Order:** Assets listed in correct loading sequence
+5. **✅ Template Strategy:** HTML templates integrated via build.html/interface.html or JavaScript
+6. **✅ Component Registration:** Vue components properly registered in global namespace
+7. **✅ Build Strategy:** Chosen between manual compilation vs Fliplet auto-concatenation
+
+#### Example Implementation Reference
+
+See [fliplet-widget-form-builder](https://github.com/Fliplet/fliplet-widget-form-builder/blob/master/widget.json) and [fliplet-widget-theme](https://github.com/Fliplet/fliplet-widget-theme/blob/master/widget.json) for complete examples of proper asset declaration and loading.
+
 ## Component Documentation
 
 ### Component Template
@@ -680,3 +898,6 @@ The generated plan should be suitable for:
 10. **Plan for accessibility** and responsive design throughout
 11. **Consider non-technical reviewers** in your language choices
 12. **Prepare for task generation** by including implementation details
+13. **Follow implementation guidelines** - Ensure all files are properly declared in widget.json
+14. **Verify dependency availability** - Check all dependencies against Fliplet's asset library
+15. **Plan file loading strategy** - Choose between manual compilation or Fliplet auto-concatenation
