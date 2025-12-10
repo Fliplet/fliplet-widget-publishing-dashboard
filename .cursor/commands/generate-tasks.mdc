@@ -1,0 +1,138 @@
+---
+description: Generating a Task List from a PRD
+---
+# Rule: Generating a Task List from a PRD
+
+## Goal
+
+To guide an AI assistant in creating a detailed, step-by-step task list in Markdown format based on an existing Product Requirements Document (PRD). The task list should guide a developer through implementation, with clear indication of which tasks can be parallelized.
+
+## Output
+
+- **Format:** Markdown (`.md`)
+- **Location:** `/tasks/`
+- **Filename:** `tasks-[prd-file-name].md` (e.g., `tasks-prd-user-profile-editing.md`)
+
+## Process
+
+1.  **Receive PRD Reference:** The user points the AI to a specific PRD file
+2.  **Analyze PRD:** The AI reads and analyzes the functional requirements, user stories, and other sections of the specified PRD.
+3.  **Assess Current State:** Review the existing codebase to understand existing infrastructure, architectural patterns and conventions. Also, identify any existing components or features that already exist and could be relevant to the PRD requirements. Then, identify existing related files, components, and utilities that can be leveraged or need modification.
+4.  **Detect/Decide Test Framework:** Before creating implementation tasks, explicitly determine whether a test framework exists:
+    - If files like `jest.config.*`, `vitest.config.*`, `tests/setup.*`, or any `*.test.*` exist, and `package.json` contains a `test` script, adopt and follow those conventions.
+    - If no framework is detected, add a first parent task to bootstrap testing (see Output Format guidance below) and specify Jest by default for vanilla JS projects.
+5.  **Phase 1: Generate Parent Tasks:** Based on the PRD analysis and current state assessment, create the file and generate the main, high-level tasks required to implement the feature. The first parent task MUST cover test framework setup when absent. Use your judgement on how many high-level tasks to use. It's likely to be about 5. Present these tasks to the user in the specified format (without sub-tasks yet). Inform the user: "I have generated the high-level tasks based on the PRD. Ready to generate the sub-tasks? Respond with 'Go' to proceed."
+6.  **Wait for Confirmation:** Pause and wait for the user to respond with "Go".
+7.  **Phase 2: Generate Sub-Tasks:** Once the user confirms, break down each parent task into smaller, actionable sub-tasks. **Identify parallelization opportunities** - group subtasks that can be executed simultaneously and mark dependencies clearly.
+8.  **Identify Relevant Files:** Based on the tasks and PRD, identify potential files that will need to be created or modified. List these under the `Relevant Files` section, including corresponding test files if applicable. For new projects, include `jest.config.js`, `tests/setup.js`, and at least one example `*.test.js`.
+9.  **Generate Final Output:** Combine the parent tasks, sub-tasks (with parallelization markers), relevant files, and notes into the final Markdown structure.
+10. **Save Task List:** Save the generated document in the `/tasks/` directory with the filename `tasks-[prd-file-name].md`, where `[prd-file-name]` matches the base name of the input PRD file (e.g., if the input was `prd-user-profile-editing.md`, the output is `tasks-prd-user-profile-editing.md`).
+
+## Parallelization Syntax
+
+Use the following markers to indicate task dependencies and parallelization:
+
+### Dependency Marker: `[needs: X.X]` or `[needs: X.X, X.X]`
+Indicates which task(s) must complete before this task can start.
+
+### Parallel Group Markers: `<!-- parallel-start -->` and `<!-- parallel-end -->`
+Groups tasks that can be executed simultaneously. All tasks in a parallel group share the same dependencies.
+
+### Blocker Marker: `[blocker]`
+Indicates a task that must complete before ANY subsequent tasks (within the parent) can proceed.
+
+### Example with Parallelization
+
+```markdown
+- [ ] 2.0 Build User Interface Components
+  - [ ] 2.1 Create shared UI utilities [blocker]
+  - [ ] 2.2 Set up component test harness [needs: 2.1]
+  <!-- parallel-start: independent-components -->
+  - [ ] 2.3 Create Button component [needs: 2.2]
+  - [ ] 2.4 Create Modal component [needs: 2.2]
+  - [ ] 2.5 Create Toast component [needs: 2.2]
+  - [ ] 2.6 Create Badge component [needs: 2.2]
+  <!-- parallel-end -->
+  - [ ] 2.7 Create composite components [needs: 2.3, 2.4, 2.5, 2.6]
+  <!-- parallel-start: page-components -->
+  - [ ] 2.8 Build Dashboard page [needs: 2.7]
+  - [ ] 2.9 Build Settings page [needs: 2.7]
+  <!-- parallel-end -->
+  - [ ] 2.10 Integration testing [needs: 2.8, 2.9]
+```
+
+### Parallelization Guidelines
+
+When generating sub-tasks, analyze for parallelization opportunities:
+
+1. **Independent components** - UI components that don't depend on each other
+2. **Independent services** - Backend services or stores with no shared state
+3. **Independent features** - Features that touch different parts of the codebase
+4. **Test files** - Tests can often be written in parallel with implementation
+5. **Mock data** - Mock data files are typically independent of each other
+
+Tasks that typically CANNOT be parallelized:
+- Tasks that modify the same file
+- Tasks where one creates an interface/type another depends on
+- Tasks with explicit data dependencies
+- Initial setup/configuration tasks (usually blockers)
+
+## Output Format
+
+The generated task list _must_ follow this structure:
+
+```markdown
+## Relevant Files
+
+- `path/to/potential/file1.ts` - Brief description of why this file is relevant.
+- `path/to/file1.test.ts` - Unit tests for `file1.ts`.
+- `path/to/another/file.tsx` - Brief description.
+- `lib/utils/helpers.ts` - Brief description.
+
+### Notes
+
+- Unit tests should typically be placed alongside the code files they are testing.
+- Use `npm run test` to run tests.
+- **Parallel tasks** are marked with `<!-- parallel-start -->` and `<!-- parallel-end -->` comments.
+- **Dependencies** are marked with `[needs: X.X]` indicating prerequisite tasks.
+- **Blockers** are marked with `[blocker]` and must complete before subsequent tasks.
+
+## Tasks
+
+- [ ] 1.0 Establish testing framework (skip if one already exists)
+  - [ ] 1.1 Add `jest.config.js` and `tests/setup.js` [blocker]
+  - [ ] 1.2 Add npm scripts: `test`, `test:watch`, `test:coverage` [needs: 1.1]
+  - [ ] 1.3 Add an example passing test [needs: 1.2]
+
+- [ ] 2.0 Parent Task Title
+  - [ ] 2.1 Foundation task [blocker]
+  <!-- parallel-start: feature-group -->
+  - [ ] 2.2 Independent subtask A [needs: 2.1]
+  - [ ] 2.3 Independent subtask B [needs: 2.1]
+  <!-- parallel-end -->
+  - [ ] 2.4 Integration task [needs: 2.2, 2.3]
+```
+
+## Parent Task Parallelization
+
+In addition to subtask parallelization, indicate which **parent tasks** can run in parallel in the "Implementation Priority Notes" section:
+
+```markdown
+## Implementation Priority Notes
+
+1. **Task 1.0 is a blocker** - Must complete before all other tasks
+2. **Tasks 2.0 and 3.0 can run in parallel** - Independent feature sets
+3. **Task 4.0 depends on 2.0 and 3.0** - Requires both to complete first
+4. **Tasks 5.0 and 6.0 can run in parallel** - No shared dependencies
+```
+
+## Interaction Model
+
+The process explicitly requires a pause after generating parent tasks to get user confirmation ("Go") before proceeding to generate the detailed sub-tasks. This ensures the high-level plan aligns with user expectations before diving into details.
+
+## Target Audience
+
+Assume the primary reader of the task list is a **junior developer** or **AI agent** (Cursor, Claude Code) who will implement the feature. Clear parallelization markers help:
+- Multiple developers work simultaneously
+- AI agents execute independent tasks in parallel
+- Better estimation of actual implementation time

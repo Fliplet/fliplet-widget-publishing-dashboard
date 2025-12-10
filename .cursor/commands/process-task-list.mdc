@@ -1,0 +1,326 @@
+---
+description: Task List Management
+---
+# Task List Management
+
+Guidelines for managing task lists in markdown files to track progress on completing a PRD. Supports both sequential and parallel task execution.
+
+## Task Syntax Reference
+
+Task lists may include parallelization markers:
+
+- **`[blocker]`** - Task must complete before ANY subsequent tasks in the parent
+- **`[needs: X.X]`** or **`[needs: X.X, X.X]`** - Task depends on specified task(s) completing first
+- **`<!-- parallel-start -->`** and **`<!-- parallel-end -->`** - Groups tasks that can run simultaneously
+- **`<!-- parallel-start: group-name -->`** - Named parallel group for clarity
+
+## Task Implementation
+
+### Progression Modes
+- **Complete-task mode:** Continue until all subtasks for the current parent task are completed, then stop at this natural checkpoint for review
+- **Step-by-step mode:** Stop after each sub-task and ask for permission to continue
+- **Complete-to-target mode:** Continue until reaching a specific target task
+- **Complete-all mode:** Continue through all remaining tasks across all parent tasks
+
+Proceed based on user preference: "task" (default), "step", "until [task-id]", or "all"
+
+### Parallel Task Execution (Always Automatic)
+
+Parallel execution is **not a separate mode**—it is automatic behavior that applies regardless of which progression mode is active. When the AI encounters a `<!-- parallel-start -->` block, it **must** execute all tasks within that group simultaneously if the tool supports parallel operations.
+
+1. **Identify all tasks in the parallel group** - Tasks between `parallel-start` and `parallel-end`
+2. **Verify dependencies are met** - All tasks in `[needs: X.X]` must be completed
+3. **Execute tasks simultaneously:**
+   - In Cursor/Claude Code: Make multiple tool calls in the same response for independent files
+   - Create/modify files that don't overlap
+   - Run independent test files concurrently
+4. **Mark all completed tasks** - Update checkboxes for all finished parallel tasks together
+5. **Proceed to next group** - Only after ALL parallel tasks complete
+
+**Example parallel execution:**
+```
+<!-- parallel-start: ui-components -->
+- [ ] 3.3 Create Button.vue [needs: 3.2]
+- [ ] 3.4 Create Modal.vue [needs: 3.2]
+- [ ] 3.5 Create Toast.vue [needs: 3.2]
+<!-- parallel-end -->
+```
+
+When processing this block:
+- Verify task 3.2 is complete
+- Create all three components in a single response (parallel tool calls)
+- Mark 3.3, 3.4, and 3.5 as complete together
+
+### Sequential Task Execution
+
+For tasks WITHOUT parallel markers or with explicit dependencies:
+
+1. Complete tasks in order (3.1 → 3.2 → 3.3)
+2. Respect `[needs: X.X]` dependencies
+3. Tasks marked `[blocker]` must complete before proceeding to ANY subsequent task
+
+### Completion Protocol
+
+1. When you finish a **sub-task**, immediately mark it as completed by changing `[ ]` to `[x]`.
+
+2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
+   - **Confirm tests**: Ask the user if they want to add/run tests now (respond with "y" to proceed or "n" to skip).
+   - If user says "y":
+     - Detect whether a test framework exists (e.g., `pytest`, `jest`, `vitest`). If it exists, run the full test suite.
+     - If no framework exists, ask if they want to bootstrap one. If "y", set it up. If "n", skip.
+   - If user says "n": Skip tests for this parent task.
+   - **Proceed** only if tests pass or user chose to skip:
+     - **Review changes**: Run `git status` to see all modified files
+     - **Stage selectively**: Only stage files related to this task
+       - List the specific files being staged
+       - Use `git add <file1> <file2> ...` for explicit control
+     - **Clean up**: Remove any temporary files before committing
+     - **Verify staging**: Run `git status` again to confirm only intended files are staged
+     - **Commit**: Use conventional commit format:
+       ```
+       git commit -m "feat: add UI components" -m "- Button, Modal, Toast components" -m "- All components tested" -m "Task 3.0 complete"
+       ```
+
+3. Once all subtasks are marked completed and changes committed, mark the **parent task** as completed.
+
+### Handling Dependencies
+
+Before starting any task, check its dependencies:
+
+```markdown
+- [ ] 2.5 Create composite component [needs: 2.3, 2.4]
+```
+
+1. Verify tasks 2.3 AND 2.4 are marked `[x]`
+2. If not, skip this task and process dependencies first
+3. Report to user: "Task 2.5 is blocked by incomplete tasks: 2.3, 2.4"
+
+## Task List Maintenance
+
+1. **Update the task list as you work:**
+   - Mark tasks and subtasks as completed (`[x]`) per the protocol above
+   - For parallel groups, mark all completed tasks in one update
+   - Add new tasks as they emerge
+
+2. **Maintain the "Relevant Files" section:**
+   - List every file created or modified
+   - Give each file a one-line description of its purpose
+
+## AI Instructions
+
+When working with task lists, the AI must:
+
+1. **Parse parallelization markers** - Identify `parallel-start/end` blocks and `[needs:]` dependencies
+2. **Execute parallel tasks automatically (mandatory):**
+   - When a `parallel-start/end` block is encountered, parallel execution is **required**, not optional
+   - Batch independent file operations in single responses
+   - Use parallel tool calls for non-overlapping files
+   - Process all tasks in a parallel group before moving on
+3. **Respect dependencies:**
+   - Never start a task if its `[needs:]` dependencies are incomplete
+   - Always complete `[blocker]` tasks before proceeding
+4. **Update task list accurately:**
+   - Mark all parallel tasks complete together after batch execution
+   - Mark sequential tasks complete one at a time
+5. **Report blocking issues:**
+   - If a dependency is incomplete, report which tasks are blocking
+   - Suggest completing blockers before proceeding
+6. **Follow completion protocol:**
+   - Mark each finished sub-task `[x]`
+   - Mark parent task `[x]` once ALL subtasks are `[x]`
+7. **Keep "Relevant Files" accurate and up to date**
+8. **Before starting work**, identify:
+   - Which task is next (respecting dependencies)
+   - Whether it's part of a parallel group
+   - What the dependencies are
+9. **After implementing**, update the file and:
+   - In "step" mode: Pause for user approval after each subtask
+   - In "task" mode: Continue until all subtasks of the current parent are complete, then pause
+   - In "until [task-id]" mode: Continue until the target task is complete, then pause
+   - In "all" mode: Continue through all tasks without pausing
+   - **Note:** Parallel execution within `parallel-start/end` blocks happens automatically in ALL modes
+10. **Before running tests**, explicitly ask the user to confirm
+
+## Example: Processing a Task List
+
+Given this task list:
+```markdown
+- [ ] 2.0 Build Components
+  - [ ] 2.1 Set up component utilities [blocker]
+  - [ ] 2.2 Create test harness [needs: 2.1]
+  <!-- parallel-start: base-components -->
+  - [ ] 2.3 Create Button [needs: 2.2]
+  - [ ] 2.4 Create Modal [needs: 2.2]
+  - [ ] 2.5 Create Toast [needs: 2.2]
+  <!-- parallel-end -->
+  - [ ] 2.6 Integration tests [needs: 2.3, 2.4, 2.5]
+- [ ] 3.0 Add Authentication
+  - [ ] 3.1 Create auth service
+  - [ ] 3.2 Add login page
+```
+
+**Processing order (parallel execution is automatic in all modes):**
+1. Execute 2.1 (blocker) → mark complete
+2. Execute 2.2 → mark complete
+3. Execute 2.3, 2.4, 2.5 **in parallel** → mark all complete together
+4. Execute 2.6 → mark complete
+5. Run tests, commit, mark 2.0 complete
+
+**Mode behavior differences:**
+
+| Mode | Command | Stops after |
+|------|---------|-------------|
+| Step-by-step | "step" | Each subtask (2.1, then 2.2, then 2.3-2.5 together, then 2.6) |
+| Complete-task | "task" | All subtasks of 2.0 complete (natural checkpoint before 3.0) |
+| Complete-to-target | "until 2.4" | Task 2.4 is complete (2.3-2.5 run in parallel, stops after) |
+| Complete-all | "all" | All tasks complete (2.0 and 3.0) |
+
+**Note:** In all modes, tasks 2.3, 2.4, and 2.5 are executed in parallel because they are within a `parallel-start/end` block. The mode only affects when the AI pauses for user input, not whether parallelization occurs.
+
+## Technology-Specific Validation
+
+### Before CSS/Styling Tasks (Task 2.0+)
+
+When working on tasks that involve CSS, styling, or UI components, verify the CSS framework configuration is correct:
+
+1. **Verify CSS Framework Configuration:**
+   ```bash
+   # Check CSS framework and version (adapt based on your project's framework)
+   # Examples: npm list tailwindcss | npm list bootstrap | npm list sass
+   npm list [your-css-framework]
+   ```
+
+2. **Verify Configuration Files:**
+   - Check framework config file exists (adapt to your framework, e.g., `tailwind.config.*`, `bootstrap.scss`, custom CSS)
+   - Verify design tokens are properly configured
+   - Check build process configuration (PostCSS, Sass, CSS-in-JS, etc.)
+   - Ensure content/scan paths are correct (if applicable to your framework)
+
+3. **If validation fails:**
+   - STOP immediately
+   - Report issue to user
+   - Review framework documentation
+   - Fix configuration before continuing
+
+### Visual Rendering Validation (MANDATORY for ALL Styling Tasks)
+
+**CRITICAL:** CSS configuration validation is NOT sufficient. You MUST verify that styles actually render visually in the browser.
+
+#### Required Visual Tests (with Screenshot Evidence)
+
+For EVERY styling task, you must:
+
+1. **Start the dev server** and navigate to the relevant page
+2. **Take a screenshot** showing the styled component/page
+3. **Verify the following visual elements are correct:**
+   - [ ] **Padding/Spacing:** Buttons, cards, and containers have visible padding (not collapsed/zero)
+   - [ ] **Colors:** Background, text, and border colors match design tokens
+   - [ ] **Typography:** Font family, size, weight, and line height render correctly
+   - [ ] **Layout:** Components are positioned correctly (not overlapping, proper alignment)
+   - [ ] **Borders/Shadows:** Border radius, shadows, and outlines appear as expected
+   - [ ] **Interactive States:** Hover, focus, active states work (test by hovering/clicking)
+   - [ ] **Responsive Behavior:** Layout adapts correctly when resizing browser window
+
+4. **Document evidence:**
+   - Save screenshot with descriptive filename: `verify-[component]-[date].png`
+   - Include screenshot in task completion comment
+   - If styles are broken, take "before" screenshot, fix, then "after" screenshot
+
+#### Why This is Required
+
+**Common failure modes that pass CSS loading but fail visually:**
+- ✅ CSS file loads → ❌ Global reset overrides all utilities/classes
+- ✅ Config is valid → ❌ Theme tokens not exposed to CSS
+- ✅ Build succeeds → ❌ CSS cascade order breaks specificity
+- ✅ No console errors → ❌ Classes misspelled or not generated
+- ✅ Framework installed → ❌ Content/scan paths don't include component files (utility frameworks)
+
+**Screenshots prevent false positives.** If you cannot see padding, spacing, or colors in the browser, the styling is not working regardless of what the build system says.
+
+#### Visual Validation Checklist
+
+After implementing ANY styling task:
+
+```markdown
+- [ ] Dev server running (`npm run dev`)
+- [ ] Browser navigated to test page
+- [ ] Hard refresh performed (Cmd+Shift+R / Ctrl+Shift+F5)
+- [ ] Screenshot captured showing:
+  - [ ] Component paddings render correctly (not zero/collapsed)
+  - [ ] Spacing utilities work (margins, gaps)
+  - [ ] Colors match design system
+  - [ ] Typography renders correctly
+  - [ ] Layout positioning is correct
+  - [ ] Borders/shadows appear as expected
+- [ ] Screenshot saved and documented
+- [ ] Any visual issues fixed and re-verified
+```
+
+#### Debugging Visual Rendering Issues
+
+If styles don't render correctly in the browser:
+
+1. **Check browser console** for CSS errors or warnings
+2. **Inspect element** in DevTools:
+   - Are CSS classes present in the HTML?
+   - Are styles computed/applied to the element?
+   - Are styles being overridden by other rules?
+3. **Check CSS cascade:**
+   - Look for global resets overriding utilities (`* { margin: 0; padding: 0; }`)
+   - Check for `!important` rules
+   - Verify layer order (if using `@layer`)
+4. **Verify CSS file is served:**
+   - Check Network tab in DevTools
+   - Curl the CSS file directly: `curl http://localhost:5173/src/styles/main.css`
+   - Look for unexpected CSS that might override utilities
+5. **Check framework architecture:**
+   - Mixing architectures and syntax WILL break styling
+6. **Restart and hard refresh:**
+   - Stop dev server
+   - Clear browser cache
+   - Restart dev server
+   - Hard refresh (Cmd+Shift+R)
+
+#### Screenshot Evidence Requirements
+
+**When to provide screenshots:**
+- ✅ Task 1.13 (CSS validation) - REQUIRED
+- ✅ Any task creating new UI components - REQUIRED
+- ✅ Any task modifying existing styles - REQUIRED
+- ✅ Any task changing theme/design tokens - REQUIRED
+- ✅ Bug fixes for visual issues - Show before/after
+- ❌ Pure logic tasks with no visual output
+
+**Screenshot naming convention:**
+```
+screenshots/
+  verify-button-component-2025-01-09.png
+  verify-modal-styling-2025-01-09.png
+  verify-responsive-layout-mobile-2025-01-09.png
+  verify-responsive-layout-desktop-2025-01-09.png
+  debug-padding-issue-before-2025-01-09.png
+  debug-padding-issue-after-2025-01-09.png
+```
+
+**Include in commit message:**
+```bash
+git commit -m "feat: add Button component" -m "- Implements primary, secondary, ghost variants" -m "- All sizes with correct padding verified" -m "- Screenshot: screenshots/verify-button-component-2025-01-09.png" -m "Task 2.3 complete"
+```
+
+---
+
+### Summary: CSS/Styling Task Protocol
+
+**Every styling task must follow this sequence:**
+
+1. ✅ Verify CSS framework configuration
+2. ✅ Implement the styling changes
+3. ✅ Start dev server and navigate to test page
+4. ✅ **Take screenshot showing visual rendering**
+5. ✅ **Verify all visual elements render correctly**
+6. ✅ If broken, debug using checklist above
+7. ✅ Save screenshot with descriptive filename
+8. ✅ Include screenshot reference in commit
+9. ✅ Mark task complete
+
+**If you skip visual verification, the task is NOT complete.**
