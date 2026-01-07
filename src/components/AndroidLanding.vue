@@ -1,5 +1,5 @@
 <template>
-  <div class="ios-publishing-container">
+  <div class="android-publishing-container">
     <!-- Platform Sidebar -->
     <PlatformSidebar :active-platform="activePlatform" @platform-change="changePlatform" />
 
@@ -14,17 +14,38 @@
           </svg>
           Start Over
         </button>
-        <button class="action-link skip">Skip iOS</button>
+        <button class="action-link skip">Skip Android</button>
       </div>
 
-      <!-- Hero Card - App Store App -->
+      <!-- Resume Banner (shown if previous build exists and is incomplete) -->
+      <transition name="slide-fade">
+        <div v-if="showResumeBanner" class="resume-banner">
+          <div class="banner-content">
+            <svg class="info-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10 6v4M10 14h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div class="banner-text">
+              <strong>Previous build incomplete</strong>
+              <span>A previous build failed at Step {{ failedStep }}. Resume from last successful step?</span>
+            </div>
+          </div>
+          <div class="banner-actions">
+            <button class="btn-text" @click="viewDetails">View details</button>
+            <button class="btn-secondary-small" @click="startNewBuild">Start new build</button>
+            <button class="btn-primary-small" @click="resumeBuild">Resume build</button>
+          </div>
+        </div>
+      </transition>
+
+      <!-- Hero Card - Google Play App -->
       <div class="hero-card">
         <div class="card-header">
           <div class="title-row">
-            <h1>App Store app</h1>
+            <h1>Google Play app</h1>
             <span class="status-pill draft">Draft</span>
           </div>
-          <button class="btn-primary continue-setup">
+          <button class="btn-primary continue-setup" @click="continueSetup">
             Continue Setup
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M7 4l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -33,7 +54,7 @@
         </div>
 
         <p class="helper-text">
-          You've started setting up your iOS app for the App Store. Complete the setup steps to publish your app and make it available to millions of users.
+          You've started setting up your Android app for Google Play. Complete the setup steps to publish your app and make it available to billions of users worldwide.
         </p>
 
         <!-- Distribution Options Panel -->
@@ -42,21 +63,21 @@
           <div class="options-grid">
             <DistributionCard
               icon="🏪"
-              title="Public App Store"
-              description="Reach millions of users through Apple's App Store"
-              @show-more="showDistributionDetails('appstore')"
+              title="Google Play Store"
+              description="Reach billions of users through Google's Play Store"
+              @show-more="showDistributionDetails('playstore')"
             />
             <DistributionCard
               icon="🔒"
-              title="Private Unlisted"
-              description="Share with specific users via direct link"
-              @show-more="showDistributionDetails('unlisted')"
+              title="Private/Internal Testing"
+              description="Share with specific testers via internal test tracks"
+              @show-more="showDistributionDetails('internal')"
             />
             <DistributionCard
               icon="💼"
-              title="MDM / Business Manager"
+              title="Enterprise Distribution"
               description="Deploy to managed devices in your organization"
-              @show-more="showDistributionDetails('mdm')"
+              @show-more="showDistributionDetails('enterprise')"
             />
           </div>
         </div>
@@ -64,8 +85,8 @@
 
       <!-- Benefits Section -->
       <div class="benefits-section">
-        <h2>Why build for iOS?</h2>
-        <BenefitsChecklist :benefits="iosBenefits" />
+        <h2>Why build for Android?</h2>
+        <BenefitsChecklist :benefits="androidBenefits" />
       </div>
 
       <!-- Divider Toggle -->
@@ -90,24 +111,23 @@
           
           <div class="method-row">
             <div class="method-info">
-              <h3>Enterprise Distribution</h3>
+              <h3>Signed APK (Existing Flow)</h3>
               <p>
-                Distribute apps internally to your organization without going through the App Store. 
-                Requires an Apple Developer Enterprise Program membership ($299/year). Ideal for large 
-                organizations deploying proprietary apps to employees.
+                Generate a signed APK file using the existing publishing flow. This method is available 
+                for apps that need traditional APK distribution outside of Google Play or for legacy systems.
               </p>
             </div>
-            <button class="btn-secondary">Start setup</button>
+            <button class="btn-secondary">Use existing flow</button>
           </div>
 
           <div class="method-divider"></div>
 
           <div class="method-row">
             <div class="method-info">
-              <h3>Unsigned IPA</h3>
+              <h3>Debug Build</h3>
               <p>
-                Generate an unsigned IPA file for development or testing purposes. You'll need to 
-                sign it manually before installation.
+                Generate an unsigned debug build for development and testing purposes. You'll need to 
+                install it manually on test devices via ADB or file transfer.
               </p>
             </div>
             <button class="btn-secondary">Start setup</button>
@@ -124,7 +144,7 @@ import DistributionCard from './DistributionCard.vue';
 import BenefitsChecklist from './BenefitsChecklist.vue';
 
 export default {
-  name: 'IOSLanding',
+  name: 'AndroidLanding',
   components: {
     PlatformSidebar,
     DistributionCard,
@@ -132,24 +152,31 @@ export default {
   },
   data() {
     return {
-      activePlatform: 'ios',
+      activePlatform: 'android',
       showAlternatives: false,
-      iosBenefits: [
-        'Apple App Store distribution',
-        'Auto configuration of push notifications',
+      showResumeBanner: false, // Set to true when incomplete build detected
+      failedStep: 3, // Example: which step failed
+      lastSubmission: null, // Store last submission data for resume
+      androidBenefits: [
+        'Google Play Store distribution',
+        'Firebase push notifications',
         'Fliplet analytics integration',
         'Google analytics support',
         'In-app notifications',
-        'Universal Links support'
+        'App Links support (deep linking)'
       ]
     };
+  },
+  mounted() {
+    // Check for incomplete builds on mount
+    this.checkForIncompleteBuilds();
   },
   methods: {
     changePlatform(platform) {
       this.activePlatform = platform;
-      // Navigate to Android if selected
-      if (platform === 'android') {
-        console.log('Navigate to Android publishing');
+      // Navigate to iOS if selected
+      if (platform === 'ios') {
+        this.$emit('navigate', 'ios');
       }
     },
     toggleAlternatives() {
@@ -158,13 +185,74 @@ export default {
     showDistributionDetails(type) {
       console.log('Show details for:', type);
       // Implement modal or side panel with more details
+    },
+    continueSetup() {
+      // Navigate to Android stepper
+      this.$emit('navigate', 'android-stepper');
+    },
+    async checkForIncompleteBuilds() {
+      try {
+        // Import API service
+        const { getLatestSubmission } = await import('../services/androidPublishingApi.js');
+        
+        // Get app ID from props or global state
+        const appId = this.$root.appId || window.Fliplet?.Env?.get('appId');
+        if (!appId) return;
+
+        const latestSubmission = await getLatestSubmission(appId);
+        
+        if (!latestSubmission) {
+          // No previous submission
+          return;
+        }
+
+        // Check if submission is incomplete (not completed or failed at a step)
+        const incompleteStatuses = ['in_progress', 'failed', 'blocked', 'waiting'];
+        if (incompleteStatuses.includes(latestSubmission.status)) {
+          this.showResumeBanner = true;
+          
+          // Determine which step failed
+          if (latestSubmission.steps && Array.isArray(latestSubmission.steps)) {
+            const failedStepIndex = latestSubmission.steps.findIndex(
+              step => step.status === 'failed' || step.status === 'blocked'
+            );
+            this.failedStep = failedStepIndex >= 0 ? failedStepIndex + 1 : 1;
+          } else {
+            this.failedStep = 1;
+          }
+          
+          // Store submission data for resume
+          this.lastSubmission = latestSubmission;
+        }
+      } catch (error) {
+        console.error('Failed to check for incomplete builds:', error);
+        // Silently fail - don't show banner if API call fails
+      }
+    },
+    resumeBuild() {
+      // Navigate to stepper with resume flag and submission data
+      this.$emit('navigate', 'android-stepper', { 
+        resume: true, 
+        submission: this.lastSubmission 
+      });
+    },
+    startNewBuild() {
+      this.showResumeBanner = false;
+      this.$emit('navigate', 'android-stepper', { newBuild: true });
+    },
+    viewDetails() {
+      // Show build details modal or navigate to details view
+      if (this.lastSubmission) {
+        console.log('View build details:', this.lastSubmission);
+        // TODO: Open modal or navigate to build details page
+      }
     }
   }
 };
 </script>
 
 <style scoped>
-.ios-publishing-container {
+.android-publishing-container {
   display: flex;
   min-height: 100vh;
   background-color: #f5f7fa;
@@ -202,6 +290,108 @@ export default {
   background-color: rgba(92, 106, 196, 0.1);
 }
 
+/* Resume Banner */
+.resume-banner {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.banner-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+
+.info-icon {
+  color: #856404;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.banner-text strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #856404;
+}
+
+.banner-text span {
+  font-size: 13px;
+  color: #856404;
+}
+
+.banner-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: #5c6ac4;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.btn-text:hover {
+  background-color: rgba(92, 106, 196, 0.1);
+}
+
+.btn-secondary-small {
+  background: white;
+  color: #5c6ac4;
+  border: 2px solid #5c6ac4;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.btn-secondary-small:hover {
+  background-color: #5c6ac4;
+  color: white;
+}
+
+.btn-primary-small {
+  background-color: #5c6ac4;
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.btn-primary-small:hover {
+  background-color: #4c5ab4;
+}
+
+/* Hero Card */
 .hero-card {
   background: white;
   border-radius: 12px;
@@ -290,6 +480,7 @@ export default {
   gap: 16px;
 }
 
+/* Benefits Section */
 .benefits-section {
   margin-bottom: 32px;
 }
@@ -301,6 +492,7 @@ export default {
   margin-bottom: 16px;
 }
 
+/* Divider Toggle */
 .divider-toggle {
   display: flex;
   justify-content: center;
@@ -334,6 +526,7 @@ export default {
   transform: rotate(180deg);
 }
 
+/* Alternative Methods Card */
 .alternative-methods-card {
   background: white;
   border-radius: 12px;
@@ -417,15 +610,4 @@ export default {
   opacity: 0;
 }
 </style>
-
-
-
-
-
-
-
-
-
-
-
 

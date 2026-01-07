@@ -1,7 +1,6 @@
 # General UI Guidelines for the Publishing Overhaul
 
-These guidelines combine the full UI concept (dashboard + stepper flows + settings) with the recommended improvements (excluding the "compare to last successful" view).
-
+These guidelines combine the full UI concept (dashboard + stepper flows + settings). These are guidance for you to follow as we wont be giving exact wireframes or requirements 
 ---
 
 ## 1. Look & Feel
