@@ -90,12 +90,7 @@ If previous Build Run exists and is failed/incomplete:
 **Left: Step List**
 
 * Step names numbered vertically:
-
-  * Step 1: Validate Bundle ID
-  * Step 2: Configure Push Notifications (Firebase)
-  * Step 3: Signing / Certificates
-  * Step 4: Build Android App
-  * Step 5: Package & Store Artifact
+ 
   * Step 6: Complete
 * Each row includes:
 

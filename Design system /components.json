@@ -1,0 +1,2137 @@
+{
+  "$schema": "./components-schema.json",
+  "version": "1.0.0",
+  "lastUpdated": "2026-01-08",
+  "description": "Design System Component Library - Primitive components that compose together following design tokens",
+
+  "components": [
+    {
+      "id": "icon-button",
+      "name": "IconButton",
+      "category": "input",
+      "description": "Button containing only an icon, used for compact actions",
+      "variants": ["ghost", "primary", "secondary", "destructive"],
+      "states": ["default", "hover", "active", "disabled", "focus"],
+      "tokens": {
+        "colors": {
+          "default": "color-neutral-5",
+          "hover": "color-primary-3",
+          "disabled": "color-neutral-3"
+        },
+        "sizing": {
+          "icon": "icon-small",
+          "padding": "space-small"
+        },
+        "transitions": {
+          "hover": "transition-fast"
+        },
+        "borders": {
+          "radius": "radius-medium"
+        }
+      },
+      "props": {
+        "variant": {
+          "type": "string",
+          "enum": ["ghost", "primary", "secondary", "destructive"],
+          "default": "ghost"
+        },
+        "size": {
+          "type": "string",
+          "enum": ["sm", "md", "lg"],
+          "default": "md"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "ariaLabel": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "usage": "Used in chat header, toolbars, cards, tables",
+      "accessibility": {
+        "ariaLabel": "Required - describes button action",
+        "keyboard": "Tab to focus, Enter/Space to activate",
+        "focusRing": "color-primary-3"
+      }
+    },
+
+    {
+      "id": "button",
+      "name": "Button",
+      "category": "input",
+      "description": "Primary interactive element for user actions",
+      "variants": ["primary", "secondary", "destructive", "ghost", "outline"],
+      "states": ["default", "hover", "active", "disabled", "loading", "focus"],
+      "tokens": {
+        "colors": {
+          "primary-bg": "color-primary-3",
+          "primary-bg-hover": "color-primary-5",
+          "primary-bg-disabled": "color-primary-4",
+          "primary-text": "color-white",
+          "secondary-bg": "color-white",
+          "secondary-border": "color-neutral-3",
+          "secondary-text": "color-neutral-8",
+          "destructive-bg": "color-error-4",
+          "destructive-bg-hover": "color-error-5"
+        },
+        "typography": {
+          "text": "text-button",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-medium"
+        },
+        "borders": {
+          "radius": "radius-medium"
+        },
+        "transitions": {
+          "hover": "transition-fast"
+        }
+      },
+      "props": {
+        "variant": {
+          "type": "string",
+          "enum": ["primary", "secondary", "destructive", "ghost", "outline"],
+          "default": "primary"
+        },
+        "size": {
+          "type": "string",
+          "enum": ["sm", "md", "lg"],
+          "default": "md"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "loading": {
+          "type": "boolean",
+          "default": false
+        },
+        "icon": {
+          "type": "ReactNode",
+          "optional": true
+        },
+        "iconPosition": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "default": "left"
+        }
+      },
+      "usage": "Primary actions, form submissions, modal confirmations",
+      "accessibility": {
+        "disabledState": "Opacity 50%, cursor not-allowed",
+        "loadingState": "Shows spinner, disabled during loading",
+        "keyboard": "Tab to focus, Enter/Space to activate"
+      }
+    },
+
+    {
+      "id": "textarea",
+      "name": "Textarea",
+      "category": "input",
+      "description": "Auto-expanding multi-line text input",
+      "variants": ["default"],
+      "states": ["empty", "focus", "typing", "disabled", "error"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border-default": "color-neutral-4",
+          "border-focus": "color-primary-3",
+          "border-error": "color-error-3",
+          "text": "color-neutral-10",
+          "placeholder": "color-neutral-5",
+          "disabled-bg": "color-neutral-2",
+          "disabled-text": "color-neutral-5"
+        },
+        "typography": {
+          "text": "text-body-1",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-medium"
+        },
+        "borders": {
+          "radius": "radius-medium",
+          "width": "1px"
+        },
+        "transitions": {
+          "focus": "transition-fast"
+        }
+      },
+      "props": {
+        "placeholder": {
+          "type": "string",
+          "optional": true
+        },
+        "minRows": {
+          "type": "number",
+          "default": 1
+        },
+        "maxRows": {
+          "type": "number",
+          "default": 8
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "error": {
+          "type": "string",
+          "optional": true
+        },
+        "value": {
+          "type": "string"
+        },
+        "onChange": {
+          "type": "function"
+        }
+      },
+      "behavior": {
+        "autoExpand": "Grows from minRows to maxRows as user types",
+        "scrollInternal": "Scrolls internally if content exceeds maxRows",
+        "keyboard": {
+          "enter": "New line",
+          "shiftEnter": "New line",
+          "customEnterHandler": "Can override to send message"
+        }
+      },
+      "usage": "Chat input, comment forms, feedback forms",
+      "accessibility": {
+        "label": "Required via aria-label or label element",
+        "errorMessage": "Displayed below input with error icon"
+      }
+    },
+
+    {
+      "id": "dropdown",
+      "name": "Dropdown",
+      "category": "input",
+      "description": "Select menu for choosing from multiple options",
+      "variants": ["default"],
+      "states": ["closed", "open", "disabled", "focus"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border-default": "color-neutral-4",
+          "border-hover": "color-primary-3",
+          "text": "color-neutral-8",
+          "icon": "color-neutral-5",
+          "disabled-bg": "color-neutral-2",
+          "disabled-text": "color-neutral-5"
+        },
+        "typography": {
+          "text": "text-body-1",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-medium"
+        },
+        "borders": {
+          "radius": "radius-medium"
+        },
+        "shadows": {
+          "dropdown": "shadow-medium"
+        },
+        "sizing": {
+          "icon": "icon-small"
+        },
+        "transitions": {
+          "open": "transition-fast"
+        }
+      },
+      "props": {
+        "options": {
+          "type": "array",
+          "items": {
+            "label": "string",
+            "value": "string"
+          }
+        },
+        "value": {
+          "type": "string"
+        },
+        "onChange": {
+          "type": "function"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "placeholder": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "behavior": {
+        "icon": "Chevron rotates when open",
+        "dropdown": "Appears below with shadow",
+        "keyboard": {
+          "space": "Open dropdown",
+          "arrows": "Navigate options",
+          "enter": "Select option",
+          "esc": "Close dropdown"
+        }
+      },
+      "usage": "Model selector in chat, filters, settings",
+      "accessibility": {
+        "role": "combobox",
+        "ariaExpanded": "Indicates open/closed state",
+        "ariaSelected": "Indicates selected option"
+      }
+    },
+
+    {
+      "id": "segmented-control",
+      "name": "SegmentedControl",
+      "category": "input",
+      "description": "Toggle between 2-5 mutually exclusive options",
+      "variants": ["default"],
+      "states": ["default"],
+      "tokens": {
+        "colors": {
+          "active-bg": "color-primary-3",
+          "active-text": "color-white",
+          "inactive-bg": "color-neutral-2",
+          "inactive-text": "color-neutral-8"
+        },
+        "typography": {
+          "text": "text-button",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-medium"
+        },
+        "borders": {
+          "radius": "radius-medium"
+        },
+        "transitions": {
+          "switch": "transition-fast"
+        }
+      },
+      "props": {
+        "options": {
+          "type": "array",
+          "items": {
+            "label": "string",
+            "value": "string"
+          },
+          "minLength": 2,
+          "maxLength": 5
+        },
+        "value": {
+          "type": "string"
+        },
+        "onChange": {
+          "type": "function"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "usage": "Mode switcher (Planning/Building) in chat header",
+      "accessibility": {
+        "role": "radiogroup",
+        "keyboard": "Arrow keys to navigate, Space/Enter to select"
+      }
+    },
+
+    {
+      "id": "file-chip",
+      "name": "FileChip",
+      "category": "display",
+      "description": "Pill-shaped badge showing attached file with remove button",
+      "variants": ["default"],
+      "states": ["default", "hover"],
+      "tokens": {
+        "colors": {
+          "background": "color-primary-1",
+          "text": "color-primary-6",
+          "remove-icon": "color-neutral-5",
+          "remove-icon-hover": "color-error-3"
+        },
+        "typography": {
+          "text": "text-caption",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding-x": "space-small",
+          "padding-y": "space-tiny",
+          "gap": "space-tiny"
+        },
+        "borders": {
+          "radius": "radius-full"
+        },
+        "sizing": {
+          "icon": "icon-small"
+        },
+        "transitions": {
+          "remove": "transition-fast"
+        }
+      },
+      "props": {
+        "fileName": {
+          "type": "string"
+        },
+        "fileIcon": {
+          "type": "ReactNode",
+          "optional": true
+        },
+        "onRemove": {
+          "type": "function"
+        },
+        "truncateAt": {
+          "type": "number",
+          "default": 20
+        }
+      },
+      "behavior": {
+        "remove": "Fades out with transition-fast on remove",
+        "truncate": "Long filenames truncated with ellipsis"
+      },
+      "usage": "Attached files in chat input, file uploads, document lists",
+      "accessibility": {
+        "removeButton": "aria-label with filename"
+      }
+    },
+
+    {
+      "id": "accordion",
+      "name": "Accordion",
+      "category": "display",
+      "description": "Collapsible section with header and expandable content",
+      "variants": ["default"],
+      "states": ["collapsed", "expanded"],
+      "tokens": {
+        "colors": {
+          "header-bg": "color-neutral-1",
+          "header-bg-hover": "color-neutral-2",
+          "header-text": "color-neutral-8",
+          "chevron-icon": "color-neutral-5",
+          "content-bg": "color-white"
+        },
+        "typography": {
+          "header-text": "text-body-1",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "header-padding": "space-medium",
+          "content-padding": "space-medium"
+        },
+        "borders": {
+          "radius": "radius-medium"
+        },
+        "sizing": {
+          "icon": "icon-small"
+        },
+        "transitions": {
+          "expand": "transition-base"
+        }
+      },
+      "props": {
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string",
+          "optional": true,
+          "description": "e.g., '2 files edited', '5 actions taken'"
+        },
+        "children": {
+          "type": "ReactNode"
+        },
+        "defaultExpanded": {
+          "type": "boolean",
+          "default": false
+        },
+        "onToggle": {
+          "type": "function",
+          "optional": true
+        }
+      },
+      "behavior": {
+        "icon": "Chevron points right when collapsed, down when expanded",
+        "animation": "Height transition with fade, 200ms duration",
+        "keyboard": {
+          "enter": "Toggle expand/collapse",
+          "space": "Toggle expand/collapse"
+        }
+      },
+      "usage": "AI message accordions (actions, files, results), FAQ sections, settings panels",
+      "accessibility": {
+        "role": "button",
+        "ariaExpanded": "Indicates collapsed/expanded state",
+        "ariaControls": "References content region ID"
+      }
+    },
+
+    {
+      "id": "code-block",
+      "name": "CodeBlock",
+      "category": "display",
+      "description": "Code display with syntax highlighting and copy button",
+      "variants": ["default", "diff"],
+      "states": ["default", "hover"],
+      "tokens": {
+        "colors": {
+          "background": "color-neutral-1",
+          "border": "color-neutral-3",
+          "label-text": "color-neutral-6",
+          "copy-icon": "color-neutral-5",
+          "copy-icon-hover": "color-primary-3",
+          "copy-icon-success": "color-success-3",
+          "diff-addition-bg": "color-success-1",
+          "diff-addition-text": "color-success-3",
+          "diff-deletion-bg": "color-error-1",
+          "diff-deletion-text": "color-error-3"
+        },
+        "typography": {
+          "code": "font-mono",
+          "label": "text-caption"
+        },
+        "spacing": {
+          "padding": "space-medium"
+        },
+        "borders": {
+          "radius": "radius-medium",
+          "width": "1px"
+        },
+        "sizing": {
+          "copy-icon": "icon-small"
+        },
+        "transitions": {
+          "copy": "transition-fast"
+        }
+      },
+      "props": {
+        "code": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "optional": true
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["default", "diff"],
+          "default": "default"
+        },
+        "showLineNumbers": {
+          "type": "boolean",
+          "default": false
+        },
+        "highlightLines": {
+          "type": "array",
+          "items": "number",
+          "optional": true
+        }
+      },
+      "behavior": {
+        "copyButton": "Appears on hover, shows checkmark for 2s after copy",
+        "syntaxHighlight": "Uses design system colors for highlighting",
+        "diffRendering": "Shows +/- indicators for additions/deletions"
+      },
+      "usage": "AI messages with code, documentation, examples",
+      "accessibility": {
+        "copyButton": "aria-label 'Copy code'",
+        "language": "Displayed for screen readers"
+      }
+    },
+
+    {
+      "id": "badge",
+      "name": "Badge",
+      "category": "display",
+      "description": "Small status indicator or label",
+      "variants": ["success", "error", "warning", "info", "neutral"],
+      "states": ["default"],
+      "tokens": {
+        "colors": {
+          "success-bg": "color-success-1",
+          "success-text": "color-success-text",
+          "error-bg": "color-error-1",
+          "error-text": "color-error-text",
+          "warning-bg": "color-warning-1",
+          "warning-text": "color-warning-text",
+          "info-bg": "color-primary-1",
+          "info-text": "color-primary-6",
+          "neutral-bg": "color-neutral-1",
+          "neutral-text": "color-neutral-9"
+        },
+        "typography": {
+          "text": "text-caption",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding-x": "space-small",
+          "padding-y": "space-tiny"
+        },
+        "borders": {
+          "radius": "radius-full"
+        }
+      },
+      "props": {
+        "variant": {
+          "type": "string",
+          "enum": ["success", "error", "warning", "info", "neutral"],
+          "default": "neutral"
+        },
+        "icon": {
+          "type": "ReactNode",
+          "optional": true
+        },
+        "children": {
+          "type": "ReactNode"
+        }
+      },
+      "usage": "Status indicators, labels, counters",
+      "accessibility": {
+        "semanticMeaning": "Color not sole indicator, includes icon/text"
+      }
+    },
+
+    {
+      "id": "modal",
+      "name": "Modal",
+      "category": "overlay",
+      "description": "Dialog overlay for confirmations and focused interactions",
+      "variants": ["default", "destructive"],
+      "states": ["closed", "opening", "open", "closing"],
+      "tokens": {
+        "colors": {
+          "backdrop": "color-black",
+          "backdrop-opacity": "50%",
+          "background": "color-white",
+          "title-text": "color-neutral-10",
+          "body-text": "color-neutral-8"
+        },
+        "typography": {
+          "title": "text-heading-2",
+          "body": "text-body-1",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-large",
+          "gap": "space-medium"
+        },
+        "borders": {
+          "radius": "radius-large"
+        },
+        "shadows": {
+          "modal": "shadow-large"
+        },
+        "transitions": {
+          "appear": "transition-base"
+        }
+      },
+      "props": {
+        "open": {
+          "type": "boolean"
+        },
+        "onClose": {
+          "type": "function"
+        },
+        "title": {
+          "type": "string"
+        },
+        "children": {
+          "type": "ReactNode"
+        },
+        "footer": {
+          "type": "ReactNode",
+          "optional": true
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["default", "destructive"],
+          "default": "default"
+        }
+      },
+      "behavior": {
+        "backdrop": "Fade in backdrop, scale up modal",
+        "keyboard": {
+          "esc": "Close modal",
+          "tab": "Trap focus within modal"
+        },
+        "scrollBehavior": "Body scrolls if content exceeds viewport"
+      },
+      "usage": "Confirmations (clear conversation), forms, alerts",
+      "accessibility": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "focusTrap": "Focus trapped within modal",
+        "initialFocus": "First interactive element"
+      }
+    },
+
+    {
+      "id": "typing-indicator",
+      "name": "TypingIndicator",
+      "category": "display",
+      "description": "Animated dots showing AI is typing",
+      "variants": ["default"],
+      "states": ["animating"],
+      "tokens": {
+        "colors": {
+          "dots": "color-neutral-5"
+        },
+        "sizing": {
+          "dot-size": "8px"
+        },
+        "spacing": {
+          "gap": "space-tiny"
+        },
+        "animations": {
+          "duration": "1.4s",
+          "timing": "ease-in-out"
+        }
+      },
+      "props": {},
+      "behavior": {
+        "animation": "3 dots pulse in sequence, infinite loop, 1.4s cycle"
+      },
+      "usage": "AI message area while waiting for response",
+      "accessibility": {
+        "ariaLabel": "AI is typing",
+        "ariaLive": "polite"
+      }
+    },
+
+    {
+      "id": "input",
+      "name": "Input",
+      "category": "input",
+      "description": "Enhanced text input with variants, states, icons, and validation",
+      "variants": ["default"],
+      "states": ["default", "focus", "error", "success", "disabled"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border-default": "color-neutral-4",
+          "border-focus": "color-primary-3",
+          "border-error": "color-error-3",
+          "border-success": "color-success-3",
+          "text": "color-neutral-10",
+          "placeholder": "color-neutral-5",
+          "disabled-bg": "color-neutral-2",
+          "disabled-text": "color-neutral-5",
+          "icon": "color-neutral-5"
+        },
+        "typography": {
+          "text": "text-body-1",
+          "label": "text-body-2",
+          "helper": "text-caption",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-medium",
+          "gap": "space-small"
+        },
+        "borders": {
+          "radius": "radius-medium",
+          "width": "1px"
+        },
+        "transitions": {
+          "focus": "transition-fast"
+        }
+      },
+      "props": {
+        "type": {
+          "type": "string",
+          "enum": ["text", "password", "email", "search", "number", "tel", "url"],
+          "default": "text"
+        },
+        "label": {
+          "type": "string",
+          "optional": true
+        },
+        "helperText": {
+          "type": "string",
+          "optional": true
+        },
+        "error": {
+          "type": "string",
+          "optional": true
+        },
+        "success": {
+          "type": "string",
+          "optional": true
+        },
+        "leftIcon": {
+          "type": "ReactNode",
+          "optional": true
+        },
+        "rightIcon": {
+          "type": "ReactNode",
+          "optional": true
+        },
+        "size": {
+          "type": "string",
+          "enum": ["sm", "md", "lg"],
+          "default": "md"
+        },
+        "fullWidth": {
+          "type": "boolean",
+          "default": false
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "behavior": {
+        "autoIcon": "Automatically adds type-specific icons (search, email, tel, url)",
+        "passwordToggle": "Shows/hides password with eye icon",
+        "validation": "Shows error/success icons and messages"
+      },
+      "usage": "Form fields, login forms, search, settings",
+      "accessibility": {
+        "label": "Required via label prop or aria-label",
+        "errorMessage": "Displayed below input with error icon",
+        "passwordToggle": "Accessible button with aria-label"
+      }
+    },
+
+    {
+      "id": "checkbox",
+      "name": "Checkbox",
+      "category": "input",
+      "description": "Custom checkbox with consistent styling and checkmark icon",
+      "variants": ["default"],
+      "states": ["unchecked", "checked", "disabled"],
+      "tokens": {
+        "colors": {
+          "background-unchecked": "color-white",
+          "background-checked": "color-primary-3",
+          "border-default": "color-neutral-4",
+          "border-checked": "color-primary-3",
+          "checkmark": "color-white",
+          "label": "color-neutral-8",
+          "disabled-bg": "color-neutral-2",
+          "disabled-border": "color-neutral-4"
+        },
+        "sizing": {
+          "box": "20px",
+          "checkmark": "12px"
+        },
+        "spacing": {
+          "gap": "space-small"
+        },
+        "borders": {
+          "radius": "radius-small",
+          "width": "2px"
+        },
+        "transitions": {
+          "check": "transition-fast"
+        }
+      },
+      "props": {
+        "checked": {
+          "type": "boolean",
+          "default": false
+        },
+        "onChange": {
+          "type": "function"
+        },
+        "label": {
+          "type": "string",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "usage": "Form selections, filters, settings toggles, multi-select lists",
+      "accessibility": {
+        "role": "checkbox",
+        "ariaChecked": "Indicates checked state",
+        "keyboard": "Space/Enter to toggle"
+      }
+    },
+
+    {
+      "id": "radio",
+      "name": "Radio",
+      "category": "input",
+      "description": "Custom radio button with inner circle indicator",
+      "variants": ["default"],
+      "states": ["unselected", "selected", "disabled"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border-default": "color-neutral-4",
+          "border-selected": "color-primary-3",
+          "indicator": "color-primary-3",
+          "label": "color-neutral-8",
+          "disabled-bg": "color-neutral-2",
+          "disabled-border": "color-neutral-4"
+        },
+        "sizing": {
+          "outer": "20px",
+          "inner": "10px"
+        },
+        "spacing": {
+          "gap": "space-small"
+        },
+        "borders": {
+          "width": "2px"
+        },
+        "transitions": {
+          "select": "transition-fast"
+        }
+      },
+      "props": {
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "value": {
+          "type": "string",
+          "required": true
+        },
+        "checked": {
+          "type": "boolean",
+          "default": false
+        },
+        "onChange": {
+          "type": "function"
+        },
+        "label": {
+          "type": "string",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "usage": "Single selection from options, form radio groups, settings",
+      "accessibility": {
+        "role": "radio",
+        "ariaChecked": "Indicates selected state",
+        "keyboard": "Space/Enter to select, Arrow keys to navigate group"
+      }
+    },
+
+    {
+      "id": "toast",
+      "name": "Toast",
+      "category": "feedback",
+      "description": "Notification component for user feedback with auto-dismiss",
+      "variants": ["success", "error", "warning", "info"],
+      "states": ["entering", "visible", "exiting"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border-success": "color-success-3",
+          "border-error": "color-error-3",
+          "border-warning": "color-warning-3",
+          "border-info": "color-primary-3",
+          "text": "color-neutral-8",
+          "icon-success": "color-success-3",
+          "icon-error": "color-error-3",
+          "icon-warning": "color-warning-3",
+          "icon-info": "color-primary-3",
+          "dismiss": "color-neutral-5"
+        },
+        "typography": {
+          "message": "text-body-1",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-large",
+          "gap": "space-medium"
+        },
+        "borders": {
+          "radius": "radius-medium",
+          "left-width": "4px"
+        },
+        "shadows": {
+          "toast": "shadow-large"
+        },
+        "transitions": {
+          "enter": "transition-base",
+          "exit": "transition-base"
+        }
+      },
+      "props": {
+        "id": {
+          "type": "string",
+          "required": true
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["success", "error", "warning", "info"],
+          "required": true
+        },
+        "message": {
+          "type": "string",
+          "required": true
+        },
+        "duration": {
+          "type": "number",
+          "default": 5000,
+          "description": "Auto-dismiss duration in ms (0 = manual only)"
+        },
+        "onDismiss": {
+          "type": "function",
+          "required": true
+        }
+      },
+      "behavior": {
+        "autoDismiss": "Automatically dismisses after duration",
+        "animation": "Slides in from right, fades out on dismiss",
+        "stacking": "Multiple toasts stack vertically"
+      },
+      "usage": "Success confirmations, error alerts, warnings, info messages",
+      "accessibility": {
+        "role": "alert",
+        "ariaLive": "polite",
+        "dismissButton": "aria-label 'Dismiss notification'"
+      }
+    },
+
+    {
+      "id": "tabs",
+      "name": "Tabs",
+      "category": "navigation",
+      "description": "Navigation component for switching between views",
+      "variants": ["underline", "pills", "vertical"],
+      "states": ["default", "active", "disabled"],
+      "tokens": {
+        "colors": {
+          "active-border": "color-primary-3",
+          "active-text": "color-primary-3",
+          "inactive-text": "color-neutral-7",
+          "hover-text": "color-neutral-9",
+          "hover-border": "color-neutral-4",
+          "pills-active-bg": "color-neutral-9",
+          "pills-active-text": "color-white",
+          "pills-inactive-bg": "color-neutral-2",
+          "vertical-active-bg": "color-neutral-2",
+          "vertical-active-border": "color-navy-5"
+        },
+        "typography": {
+          "text": "text-body-2",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-medium",
+          "gap-underline": "space-xl",
+          "gap-pills": "space-small"
+        },
+        "borders": {
+          "underline-width": "2px",
+          "vertical-width": "2px"
+        },
+        "transitions": {
+          "switch": "transition-fast"
+        }
+      },
+      "props": {
+        "variant": {
+          "type": "string",
+          "enum": ["underline", "pills", "vertical"],
+          "default": "underline"
+        },
+        "tabs": {
+          "type": "array",
+          "items": {
+            "value": "string",
+            "label": "string",
+            "icon": "ReactNode (optional)",
+            "disabled": "boolean (optional)"
+          }
+        },
+        "activeTab": {
+          "type": "string",
+          "required": true
+        },
+        "onChange": {
+          "type": "function",
+          "required": true
+        }
+      },
+      "usage": "Page sections, settings panels, navigation sidebars",
+      "accessibility": {
+        "role": "tablist",
+        "ariaSelected": "Indicates active tab",
+        "keyboard": "Arrow keys to navigate, Enter/Space to select"
+      }
+    },
+
+    {
+      "id": "table",
+      "name": "Table",
+      "category": "display",
+      "description": "Data table with sorting, filtering, pagination, and selection",
+      "variants": ["default"],
+      "states": ["default", "loading", "empty"],
+      "tokens": {
+        "colors": {
+          "header-bg": "color-neutral-1",
+          "header-text": "color-neutral-8",
+          "row-bg": "color-white",
+          "row-hover": "color-neutral-1",
+          "row-selected": "color-primary-1",
+          "border": "color-neutral-3",
+          "sort-icon": "color-neutral-5",
+          "sort-icon-active": "color-neutral-8"
+        },
+        "typography": {
+          "header": "text-caption",
+          "cell": "text-body-1",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "cell-padding": "space-medium",
+          "toolbar-padding": "space-medium"
+        },
+        "borders": {
+          "width": "1px",
+          "radius": "radius-large"
+        }
+      },
+      "props": {
+        "columns": {
+          "type": "array",
+          "items": {
+            "key": "string",
+            "header": "string",
+            "sortable": "boolean (optional)",
+            "render": "function (optional)",
+            "align": "left | center | right (optional)",
+            "width": "string (optional)"
+          }
+        },
+        "data": {
+          "type": "array",
+          "required": true
+        },
+        "selectable": {
+          "type": "boolean",
+          "default": false
+        },
+        "selectedRows": {
+          "type": "Set<string>",
+          "optional": true
+        },
+        "onSelectionChange": {
+          "type": "function",
+          "optional": true
+        },
+        "getRowKey": {
+          "type": "function",
+          "required": true
+        },
+        "onRowClick": {
+          "type": "function",
+          "optional": true
+        },
+        "loading": {
+          "type": "boolean",
+          "default": false
+        },
+        "emptyMessage": {
+          "type": "string",
+          "default": "No data available"
+        },
+        "searchable": {
+          "type": "boolean",
+          "default": false
+        },
+        "paginated": {
+          "type": "boolean",
+          "default": false
+        },
+        "rowsPerPage": {
+          "type": "number",
+          "default": 10
+        },
+        "filters": {
+          "type": "array",
+          "optional": true
+        },
+        "sortOptions": {
+          "type": "array",
+          "optional": true
+        }
+      },
+      "behavior": {
+        "sorting": "Click column headers to sort asc/desc",
+        "selection": "Checkbox in first column for row selection",
+        "pagination": "Previous/Next buttons with page info",
+        "search": "Filters rows by search term",
+        "loading": "Shows skeleton rows while loading"
+      },
+      "usage": "Data lists, admin panels, reports, settings tables",
+      "accessibility": {
+        "role": "table",
+        "sortButton": "Accessible sort controls",
+        "pagination": "aria-labels for navigation"
+      }
+    },
+
+    {
+      "id": "stat-card",
+      "name": "StatCard",
+      "category": "display",
+      "description": "Dashboard metric card with value, label, and trend indicator",
+      "variants": ["default", "primary", "success", "warning", "error"],
+      "states": ["default", "loading"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border-default": "color-neutral-9",
+          "border-primary": "color-primary-3",
+          "border-success": "color-success-4",
+          "border-warning": "color-warning-4",
+          "border-error": "color-error-4",
+          "value-default": "color-neutral-9",
+          "value-primary": "color-primary-3",
+          "value-success": "color-success-4",
+          "value-warning": "color-warning-4",
+          "value-error": "color-error-4",
+          "label": "color-neutral-7",
+          "trend-up": "color-success-3",
+          "trend-down": "color-error-3",
+          "trend-neutral": "color-neutral-7"
+        },
+        "typography": {
+          "value": "text-4xl font-semibold",
+          "label": "text-body-2",
+          "trend": "text-body-2",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-large",
+          "gap": "space-small"
+        },
+        "borders": {
+          "radius": "radius-large",
+          "width": "1px"
+        }
+      },
+      "props": {
+        "value": {
+          "type": "string | number",
+          "required": true
+        },
+        "label": {
+          "type": "string",
+          "required": true
+        },
+        "icon": {
+          "type": "ReactNode",
+          "optional": true
+        },
+        "trend": {
+          "type": "string",
+          "enum": ["up", "down", "neutral"],
+          "optional": true
+        },
+        "trendValue": {
+          "type": "string",
+          "optional": true
+        },
+        "trendLabel": {
+          "type": "string",
+          "default": "vs. last period"
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["default", "primary", "success", "warning", "error"],
+          "default": "default"
+        },
+        "loading": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "usage": "Dashboard metrics, KPI displays, analytics summaries",
+      "accessibility": {
+        "semanticStructure": "Uses heading hierarchy for labels"
+      }
+    },
+
+    {
+      "id": "search-input",
+      "name": "SearchInput",
+      "category": "input",
+      "description": "Search input with clear button and loading state",
+      "variants": ["default"],
+      "states": ["empty", "typing", "loading", "disabled"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border-default": "color-neutral-4",
+          "border-focus": "color-primary-3",
+          "text": "color-neutral-10",
+          "placeholder": "color-neutral-5",
+          "icon": "color-neutral-5",
+          "clear-icon": "color-neutral-5",
+          "clear-icon-hover": "color-neutral-7",
+          "disabled-bg": "color-neutral-2"
+        },
+        "typography": {
+          "text": "text-body-1",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-medium",
+          "gap": "space-small"
+        },
+        "borders": {
+          "radius": "radius-small",
+          "width": "1px"
+        },
+        "sizing": {
+          "icon": "icon-small"
+        },
+        "transitions": {
+          "focus": "transition-fast"
+        }
+      },
+      "props": {
+        "value": {
+          "type": "string",
+          "required": true
+        },
+        "onValueChange": {
+          "type": "function",
+          "required": true
+        },
+        "onClear": {
+          "type": "function",
+          "optional": true
+        },
+        "placeholder": {
+          "type": "string",
+          "default": "Search..."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["sm", "md", "lg"],
+          "default": "md"
+        },
+        "fullWidth": {
+          "type": "boolean",
+          "default": false
+        },
+        "loading": {
+          "type": "boolean",
+          "default": false
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "behavior": {
+        "clearButton": "Appears when input has value",
+        "loadingSpinner": "Shows spinner during search",
+        "keyboard": "Escape clears input"
+      },
+      "usage": "Table search, global search, filter inputs",
+      "accessibility": {
+        "role": "searchbox",
+        "clearButton": "aria-label 'Clear search'"
+      }
+    },
+
+    {
+      "id": "split-button",
+      "name": "SplitButton",
+      "category": "input",
+      "description": "Button with primary action and dropdown for secondary actions",
+      "variants": ["primary", "secondary"],
+      "states": ["default", "hover", "open", "disabled"],
+      "tokens": {
+        "colors": {
+          "primary-bg": "color-primary-3",
+          "primary-text": "color-white",
+          "secondary-bg": "color-white",
+          "secondary-border": "color-neutral-4",
+          "secondary-text": "color-neutral-8",
+          "divider": "color-primary-5",
+          "dropdown-bg": "color-white",
+          "dropdown-hover": "color-neutral-1"
+        },
+        "typography": {
+          "text": "text-button",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-medium",
+          "dropdown-padding": "space-small"
+        },
+        "borders": {
+          "radius": "radius-medium"
+        },
+        "shadows": {
+          "dropdown": "shadow-medium"
+        },
+        "transitions": {
+          "hover": "transition-fast"
+        }
+      },
+      "props": {
+        "label": {
+          "type": "string",
+          "required": true
+        },
+        "onClick": {
+          "type": "function",
+          "required": true
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "label": "string",
+            "onClick": "function",
+            "icon": "ReactNode (optional)"
+          }
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["primary", "secondary"],
+          "default": "primary"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "behavior": {
+        "primaryAction": "Clicking main button triggers primary action",
+        "dropdown": "Clicking chevron opens dropdown menu",
+        "keyboard": "Arrow keys navigate dropdown, Escape closes"
+      },
+      "usage": "Save with options, export formats, action variations",
+      "accessibility": {
+        "ariaHaspopup": "true",
+        "ariaExpanded": "Indicates dropdown state",
+        "keyboard": "Full keyboard navigation support"
+      }
+    },
+
+    {
+      "id": "card",
+      "name": "Card",
+      "category": "layout",
+      "description": "Container component for grouped content with optional header and footer",
+      "variants": ["default", "elevated", "outlined"],
+      "states": ["default", "hover"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border": "color-neutral-3",
+          "header-text": "color-neutral-9",
+          "body-text": "color-neutral-8"
+        },
+        "typography": {
+          "title": "text-heading-3",
+          "subtitle": "text-caption",
+          "body": "text-body-1",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-large",
+          "gap": "space-medium"
+        },
+        "borders": {
+          "radius": "radius-large",
+          "width": "1px"
+        },
+        "shadows": {
+          "default": "shadow-subtle",
+          "elevated": "shadow-medium",
+          "hover": "shadow-medium"
+        },
+        "transitions": {
+          "hover": "transition-fast"
+        }
+      },
+      "props": {
+        "variant": {
+          "type": "string",
+          "enum": ["default", "elevated", "outlined"],
+          "default": "default"
+        },
+        "header": {
+          "type": "ReactNode",
+          "optional": true
+        },
+        "footer": {
+          "type": "ReactNode",
+          "optional": true
+        },
+        "children": {
+          "type": "ReactNode",
+          "required": true
+        },
+        "onClick": {
+          "type": "function",
+          "optional": true
+        }
+      },
+      "usage": "Content grouping, settings panels, dashboard widgets",
+      "accessibility": {
+        "interactive": "Has role='button' when onClick provided"
+      }
+    },
+
+    {
+      "id": "spinner",
+      "name": "Spinner",
+      "category": "feedback",
+      "description": "Loading indicator for async operations",
+      "variants": ["default"],
+      "states": ["spinning"],
+      "tokens": {
+        "colors": {
+          "spinner": "color-primary-3",
+          "text": "color-neutral-7"
+        },
+        "sizing": {
+          "inline": "16px",
+          "default": "32px",
+          "page": "48px"
+        },
+        "animations": {
+          "duration": "1s",
+          "timing": "linear"
+        }
+      },
+      "props": {
+        "size": {
+          "type": "string",
+          "enum": ["inline", "default", "page"],
+          "default": "default"
+        },
+        "text": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "usage": "Button loading, page loading, async operations",
+      "accessibility": {
+        "ariaLabel": "Loading",
+        "role": "status"
+      }
+    },
+
+    {
+      "id": "divider",
+      "name": "Divider",
+      "category": "layout",
+      "description": "Visual separator for sections",
+      "variants": ["horizontal", "vertical"],
+      "states": ["default"],
+      "tokens": {
+        "colors": {
+          "line": "color-neutral-3",
+          "label": "color-neutral-6"
+        },
+        "typography": {
+          "label": "text-caption",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "label-padding": "space-medium"
+        }
+      },
+      "props": {
+        "orientation": {
+          "type": "string",
+          "enum": ["horizontal", "vertical"],
+          "default": "horizontal"
+        },
+        "label": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "usage": "Section separators, form dividers, OR separators",
+      "accessibility": {
+        "role": "separator",
+        "ariaOrientation": "horizontal or vertical"
+      }
+    },
+
+    {
+      "id": "list",
+      "name": "List",
+      "category": "display",
+      "description": "Ordered or unordered list container with item components",
+      "variants": ["unordered", "ordered"],
+      "states": ["default"],
+      "tokens": {
+        "colors": {
+          "text": "color-neutral-8",
+          "bullet": "color-neutral-5",
+          "hover-bg": "color-neutral-1"
+        },
+        "typography": {
+          "text": "text-body-1",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "item-padding": "space-small",
+          "item-gap": "space-tiny"
+        }
+      },
+      "props": {
+        "variant": {
+          "type": "string",
+          "enum": ["unordered", "ordered"],
+          "default": "unordered"
+        },
+        "children": {
+          "type": "ReactNode",
+          "required": true
+        }
+      },
+      "usage": "Feature lists, navigation menus, content lists",
+      "accessibility": {
+        "role": "list",
+        "itemRole": "listitem"
+      }
+    },
+
+    {
+      "id": "dropdown-menu",
+      "name": "DropdownMenu",
+      "category": "overlay",
+      "description": "Context menu with action items and optional icons",
+      "variants": ["default"],
+      "states": ["closed", "open"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border": "color-neutral-3",
+          "item-text": "color-neutral-8",
+          "item-hover": "color-neutral-1",
+          "item-icon": "color-neutral-6",
+          "destructive-text": "color-error-3",
+          "divider": "color-neutral-3"
+        },
+        "typography": {
+          "item": "text-body-1",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "padding": "space-small",
+          "item-padding": "space-small"
+        },
+        "borders": {
+          "radius": "radius-medium"
+        },
+        "shadows": {
+          "menu": "shadow-medium"
+        },
+        "transitions": {
+          "open": "transition-fast"
+        }
+      },
+      "props": {
+        "trigger": {
+          "type": "ReactNode",
+          "required": true
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "label": "string",
+            "onClick": "function",
+            "icon": "ReactNode (optional)",
+            "destructive": "boolean (optional)",
+            "divider": "boolean (optional)"
+          }
+        },
+        "align": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "default": "left"
+        }
+      },
+      "behavior": {
+        "trigger": "Click trigger to open menu",
+        "dismiss": "Click outside or Escape to close",
+        "keyboard": "Arrow keys to navigate, Enter to select"
+      },
+      "usage": "More actions menu, context menus, user menus",
+      "accessibility": {
+        "role": "menu",
+        "ariaHaspopup": "true",
+        "keyboard": "Full keyboard navigation"
+      }
+    },
+
+    {
+      "id": "toggle",
+      "name": "Toggle",
+      "category": "input",
+      "description": "Binary on/off toggle switch for settings",
+      "variants": ["default"],
+      "states": ["off", "on", "disabled"],
+      "tokens": {
+        "colors": {
+          "track-off": "color-neutral-3",
+          "track-on": "color-primary-3",
+          "thumb": "color-white",
+          "label": "color-neutral-8",
+          "description": "color-neutral-6",
+          "disabled-opacity": "50%"
+        },
+        "sizing": {
+          "sm-track": "32px × 16px",
+          "sm-thumb": "12px",
+          "md-track": "40px × 20px",
+          "md-thumb": "16px",
+          "lg-track": "48px × 24px",
+          "lg-thumb": "20px"
+        },
+        "spacing": {
+          "gap": "space-medium"
+        },
+        "borders": {
+          "radius": "radius-full"
+        },
+        "transitions": {
+          "switch": "transition-base"
+        }
+      },
+      "props": {
+        "checked": {
+          "type": "boolean",
+          "default": false
+        },
+        "onChange": {
+          "type": "function"
+        },
+        "label": {
+          "type": "string",
+          "optional": true
+        },
+        "description": {
+          "type": "string",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "size": {
+          "type": "string",
+          "enum": ["sm", "md", "lg"],
+          "default": "md"
+        }
+      },
+      "usage": "Settings toggles, feature flags, boolean preferences",
+      "accessibility": {
+        "role": "switch",
+        "ariaChecked": "Indicates on/off state",
+        "keyboard": "Space/Enter to toggle"
+      }
+    },
+
+    {
+      "id": "date-picker",
+      "name": "DatePicker",
+      "category": "input",
+      "description": "Calendar-based date selection with dropdown",
+      "variants": ["default"],
+      "states": ["default", "open", "disabled", "error"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border-default": "color-neutral-4",
+          "border-focus": "color-primary-3",
+          "border-error": "color-error-3",
+          "text": "color-neutral-10",
+          "placeholder": "color-neutral-5",
+          "icon": "color-neutral-5",
+          "calendar-bg": "color-white",
+          "day-hover": "color-neutral-1",
+          "day-selected": "color-primary-3",
+          "day-today": "color-primary-1",
+          "day-disabled": "color-neutral-3"
+        },
+        "typography": {
+          "text": "text-body-1",
+          "label": "text-body-2",
+          "day": "text-caption",
+          "month": "text-body-2",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "input-padding": "space-medium",
+          "calendar-padding": "space-medium",
+          "day-gap": "space-tiny"
+        },
+        "borders": {
+          "radius": "radius-medium",
+          "calendar-radius": "radius-large"
+        },
+        "shadows": {
+          "calendar": "shadow-medium"
+        },
+        "transitions": {
+          "open": "transition-fast"
+        }
+      },
+      "props": {
+        "value": {
+          "type": "Date | null",
+          "optional": true
+        },
+        "onChange": {
+          "type": "function"
+        },
+        "label": {
+          "type": "string",
+          "optional": true
+        },
+        "placeholder": {
+          "type": "string",
+          "default": "Select date"
+        },
+        "helperText": {
+          "type": "string",
+          "optional": true
+        },
+        "error": {
+          "type": "string",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "minDate": {
+          "type": "Date",
+          "optional": true
+        },
+        "maxDate": {
+          "type": "Date",
+          "optional": true
+        }
+      },
+      "behavior": {
+        "calendar": "Opens calendar dropdown on click",
+        "navigation": "Month/year arrows to navigate",
+        "todayButton": "Quick select today's date",
+        "keyboard": "Escape closes, arrows navigate days"
+      },
+      "usage": "Date selection, scheduling, filters",
+      "accessibility": {
+        "role": "combobox",
+        "ariaExpanded": "Indicates calendar open state",
+        "keyboard": "Full keyboard navigation"
+      }
+    },
+
+    {
+      "id": "time-picker",
+      "name": "TimePicker",
+      "category": "input",
+      "description": "Time selection dropdown with configurable intervals",
+      "variants": ["default"],
+      "states": ["default", "open", "disabled", "error"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border-default": "color-neutral-4",
+          "border-focus": "color-primary-3",
+          "border-error": "color-error-3",
+          "text": "color-neutral-10",
+          "placeholder": "color-neutral-5",
+          "icon": "color-neutral-5",
+          "option-hover": "color-neutral-1",
+          "option-selected": "color-primary-1"
+        },
+        "typography": {
+          "text": "text-body-1",
+          "label": "text-body-2",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "input-padding": "space-medium",
+          "option-padding": "space-small"
+        },
+        "borders": {
+          "radius": "radius-medium",
+          "dropdown-radius": "radius-large"
+        },
+        "shadows": {
+          "dropdown": "shadow-medium"
+        },
+        "transitions": {
+          "open": "transition-fast"
+        }
+      },
+      "props": {
+        "value": {
+          "type": "string",
+          "optional": true,
+          "description": "HH:mm or hh:mm AM/PM format"
+        },
+        "onChange": {
+          "type": "function"
+        },
+        "label": {
+          "type": "string",
+          "optional": true
+        },
+        "placeholder": {
+          "type": "string",
+          "default": "Select time"
+        },
+        "helperText": {
+          "type": "string",
+          "optional": true
+        },
+        "error": {
+          "type": "string",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "use24Hour": {
+          "type": "boolean",
+          "default": false
+        },
+        "minuteStep": {
+          "type": "number",
+          "enum": [1, 5, 10, 15, 30],
+          "default": 15
+        },
+        "minTime": {
+          "type": "string",
+          "optional": true
+        },
+        "maxTime": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "behavior": {
+        "dropdown": "Shows scrollable list of time slots",
+        "format": "Displays 12h or 24h based on use24Hour prop",
+        "keyboard": "Arrow keys to navigate, Enter to select"
+      },
+      "usage": "Time selection, scheduling, appointments",
+      "accessibility": {
+        "role": "combobox",
+        "ariaExpanded": "Indicates dropdown open state",
+        "keyboard": "Full keyboard navigation"
+      }
+    },
+
+    {
+      "id": "multi-select",
+      "name": "MultiSelect",
+      "category": "input",
+      "description": "Multi-selection dropdown with search and tags",
+      "variants": ["default"],
+      "states": ["default", "open", "disabled", "error"],
+      "tokens": {
+        "colors": {
+          "background": "color-white",
+          "border-default": "color-neutral-4",
+          "border-focus": "color-primary-3",
+          "border-error": "color-error-3",
+          "text": "color-neutral-10",
+          "placeholder": "color-neutral-5",
+          "tag-bg": "color-neutral-2",
+          "tag-text": "color-neutral-8",
+          "tag-remove": "color-neutral-5",
+          "option-hover": "color-neutral-1",
+          "option-selected": "color-primary-1",
+          "checkbox-checked": "color-primary-3"
+        },
+        "typography": {
+          "text": "text-body-1",
+          "label": "text-body-2",
+          "tag": "text-caption",
+          "font": "font-primary"
+        },
+        "spacing": {
+          "input-padding": "space-medium",
+          "tag-padding": "space-tiny",
+          "tag-gap": "space-tiny",
+          "option-padding": "space-small"
+        },
+        "borders": {
+          "radius": "radius-medium",
+          "tag-radius": "radius-small",
+          "dropdown-radius": "radius-large"
+        },
+        "shadows": {
+          "dropdown": "shadow-medium"
+        },
+        "transitions": {
+          "open": "transition-fast"
+        }
+      },
+      "props": {
+        "options": {
+          "type": "array",
+          "items": {
+            "value": "string",
+            "label": "string",
+            "disabled": "boolean (optional)"
+          },
+          "required": true
+        },
+        "value": {
+          "type": "string[]",
+          "default": []
+        },
+        "onChange": {
+          "type": "function"
+        },
+        "label": {
+          "type": "string",
+          "optional": true
+        },
+        "placeholder": {
+          "type": "string",
+          "default": "Select options"
+        },
+        "helperText": {
+          "type": "string",
+          "optional": true
+        },
+        "error": {
+          "type": "string",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "searchable": {
+          "type": "boolean",
+          "default": true
+        },
+        "maxItems": {
+          "type": "number",
+          "optional": true,
+          "description": "Maximum selections allowed"
+        }
+      },
+      "behavior": {
+        "tags": "Selected items shown as removable tags",
+        "search": "Filter options by typing in search box",
+        "selection": "Toggle options with checkboxes",
+        "keyboard": "Arrow keys navigate, Space toggles, Escape closes"
+      },
+      "usage": "Multi-selection filters, tag inputs, category selection",
+      "accessibility": {
+        "role": "combobox",
+        "ariaMultiselectable": "true",
+        "keyboard": "Full keyboard navigation"
+      }
+    }
+  ],
+
+  "compositions": [
+    {
+      "id": "chat-input",
+      "name": "ChatInput",
+      "description": "Composed input area for chat with attachment and send",
+      "primitives": ["IconButton", "Textarea", "FileChip", "Button"],
+      "structure": {
+        "layout": "Vertical flex container",
+        "children": [
+          {
+            "component": "FileChip",
+            "condition": "if files attached",
+            "props": "fileName, onRemove"
+          },
+          {
+            "component": "Horizontal flex row",
+            "children": [
+              {
+                "component": "IconButton",
+                "props": "variant='ghost', ariaLabel='Attach file'"
+              },
+              {
+                "component": "Textarea",
+                "props": "placeholder, minRows=1, maxRows=8"
+              },
+              {
+                "component": "IconButton",
+                "props": "variant='ghost', ariaLabel='Enhance prompt'"
+              },
+              {
+                "component": "Button",
+                "props": "variant='primary', disabled=isEmpty"
+              }
+            ]
+          }
+        ]
+      },
+      "referenceSpec": "CHAT_COMPONENT_SPEC.md"
+    },
+
+    {
+      "id": "chat-header",
+      "name": "ChatHeader",
+      "description": "Header with model selector, mode switcher, and clear button",
+      "primitives": ["Dropdown", "SegmentedControl", "IconButton"],
+      "structure": {
+        "layout": "Horizontal flex container with space-between",
+        "children": [
+          {
+            "component": "Dropdown",
+            "props": "options=['Model 1', 'Model 2', 'Model 3']"
+          },
+          {
+            "component": "SegmentedControl",
+            "props": "options=['Planning', 'Building']"
+          },
+          {
+            "component": "IconButton",
+            "props": "variant='ghost', ariaLabel='Clear conversation'"
+          }
+        ]
+      },
+      "referenceSpec": "CHAT_COMPONENT_SPEC.md"
+    },
+
+    {
+      "id": "ai-message",
+      "name": "AIMessage",
+      "description": "AI message bubble with markdown and collapsible sections",
+      "primitives": ["CodeBlock", "Accordion"],
+      "structure": {
+        "layout": "Vertical flex container with gap",
+        "children": [
+          {
+            "component": "Markdown renderer",
+            "note": "Uses CodeBlock for code sections"
+          },
+          {
+            "component": "Accordion",
+            "condition": "if has actions",
+            "props": "title='Actions taken', summary=count"
+          },
+          {
+            "component": "Accordion",
+            "condition": "if has files",
+            "props": "title='Files edited', summary=count"
+          }
+        ]
+      },
+      "referenceSpec": "CHAT_COMPONENT_SPEC.md"
+    }
+  ]
+}
