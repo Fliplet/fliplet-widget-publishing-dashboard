@@ -39,8 +39,8 @@
     "vinyl-named": "^1.1.0",
     "vue-loader": "^15.7.0",
     "vue-template-compiler": "^2.6.10",
-    "webpack": "^4.34.0",
-    "webpack-stream": "^5.2.1",
+    "webpack": "^5.105.4",
+    "webpack-stream": "^7.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "@babel/preset-env": "^7.4.5"
